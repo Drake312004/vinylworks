@@ -27,8 +27,11 @@ button{font-size:17px;font-weight:700;border:0;border-radius:10px;min-height:52p
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.sec{background:#26262c;color:#fff;border:1px solid #444}
 .sq{display:flex;align-items:center;gap:8px;border-top:1px solid #2a2a30;padding:8px 0}.sq .i{flex:1;font-size:14px}.sq .i small{color:#888;display:block}.sq button{min-height:40px;font-size:14px}.op{background:#ff2d2d;color:#fff}
 #pv{display:none}
-@media print{body{background:#fff!important;color:#000;padding:0}body>*:not(#pv){display:none!important}#pv{display:block!important;font:14px/1.5 Arial,sans-serif;color:#000;padding:24px}
-#pv h2{margin:0;font-size:28px;font-style:italic;letter-spacing:2px}#pv .h{border-bottom:3px solid #c00;padding-bottom:8px;margin-bottom:14px}#pv table{width:100%;border-collapse:collapse;margin-bottom:10px}#pv td{padding:4px 0;border-bottom:1px solid #ddd}#pv td:last-child{text-align:right;white-space:nowrap}#pv .s td{font-weight:700;border-bottom:2px solid #000}#pv .t{font-size:20px;font-weight:900;display:flex;justify-content:space-between;margin-top:10px}#pv .k{color:#c00;font-weight:700;margin-top:10px}}
+@media print{@page{size:letter;margin:0.55in 0.7in}body{background:#fff!important;color:#000;padding:0}body>*:not(#pv){display:none!important}#pv{display:block!important;background:#fff;font:10pt/1.4 Helvetica,Arial,sans-serif;color:#000}#pv *{background:transparent;color:#000}
+#pv .top{display:flex;justify-content:space-between}#pv .biz b{font-size:16pt}#pv .ttl{text-align:right}#pv .ttl b{font-size:22pt;display:block;line-height:1.1;margin-bottom:6px}
+#pv .to{display:flex;margin-top:26px}#pv .to div{width:50%}#pv table{width:100%;border-collapse:collapse;margin-top:26px}#pv th{text-align:left;border-top:1px solid #000;border-bottom:1px solid #000;padding:3px 0}
+#pv td{padding:3px 0;vertical-align:top}#pv .r{text-align:right;white-space:nowrap}#pv .q{width:70px}#pv tr.grp td{font-weight:bold;padding-top:8px}#pv tr.end td{border-top:1px solid #000;padding:0;height:6px}
+#pv .tots{margin-left:auto;width:340px}#pv .tots td{padding:2px 0}#pv .tots .b td{font-weight:bold}#pv .ft{margin-top:22px}#pv .ty{margin-top:16px;font-style:italic}}
 </style><link rel="manifest" href="manifest.json"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="VINYL WORKS">
 <link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"></head><body>
 <h1>VINYL<span>WORKS</span></h1><div class="sub">Forged Decals · Montreal · Quote calculator (CAD, no tax)</div>
@@ -109,20 +112,37 @@ const SK="vw_saved_quotes",getS=()=>{try{return JSON.parse(localStorage.getItem(
 const fdate=ts=>new Date(ts).toLocaleDateString("en-CA",{year:"numeric",month:"short",day:"numeric"});
 let curId=null;
 window.saveQuote=()=>{const a=getS(),s=state(),tot=q().total,now=Date.now();const i=a.findIndex(x=>x.id===curId);
- if(i>=0){a[i]={...a[i],s,total:tot,date:now};}else{curId="q"+now;a.unshift({id:curId,s,total:tot,date:now});}putS(a);drawSaved();alert("Quote saved ✅");};
-window.openQuote=id=>{const x=getS().find(x=>x.id===id);if(x&&load(x.s)){curId=id;scrollTo(0,0);}};
+ if(i>=0){a[i]={...a[i],s,total:tot,date:now,no:a[i].no||nextNo()};}else{const no=curNo||nextNo();curId="q"+now;a.unshift({id:curId,no,s,total:tot,date:now});}putS(a);drawSaved();alert("Quote saved ✅");};
+window.openQuote=id=>{const x=getS().find(x=>x.id===id);if(x&&load(x.s)){curId=id;curNo=null;scrollTo(0,0);}};
 window.delQuote=id=>{const x=getS().find(x=>x.id===id);if(!x||!confirm(`Delete quote for ${x.s.c.n||"(no name)"}?`))return;putS(getS().filter(y=>y.id!==id));if(curId===id)curId=null;drawSaved();};
-window.newQuote=()=>{if(!confirm("Start a new blank quote? (unsaved changes are lost)"))return;curId=null;load({l:[],c:{},ia:false,t:{}});history.replaceState(null,"",location.pathname);};
-function drawSaved(){const a=getS();$("scount").textContent=a.length;$("saved").innerHTML=a.length?a.map(x=>`<div class="sq"><div class="i"><b>${esc(x.s.c.n||"(no name)")}</b> · ${m(x.total)}<small>${fdate(x.date)}${x.s.c.ct?" · "+esc(x.s.c.ct):""}</small></div><button class="op" onclick="openQuote('${x.id}')">Open</button><button class="rm" style="float:none" onclick="delQuote('${x.id}')">Delete</button></div>`).join(""):'<div class="line">No saved quotes yet</div>';}
+window.newQuote=()=>{if(!confirm("Start a new blank quote? (unsaved changes are lost)"))return;curId=null;curNo=null;load({l:[],c:{},ia:false,t:{}});history.replaceState(null,"",location.pathname);};
+function drawSaved(){const a=getS();$("scount").textContent=a.length;$("saved").innerHTML=a.length?a.map(x=>`<div class="sq"><div class="i"><b>${esc(x.s.c.n||"(no name)")}</b> · ${m(x.total)}<small>${x.no?x.no+" · ":""}${fdate(x.date)}${x.s.c.ct?" · "+esc(x.s.c.ct):""}</small></div><button class="op" onclick="openQuote('${x.id}')">Open</button><button class="rm" style="float:none" onclick="delQuote('${x.id}')">Delete</button></div>`).join(""):'<div class="line">No saved quotes yet</div>';}
 window.shareQuote=()=>{const url=location.origin+location.pathname+"#q="+enc(state()),n=$("c_name").value,title="Forged Decals quote"+(n?" – "+n:"");
  const fb=()=>{const done=()=>alert("Share link copied ✅");if(navigator.clipboard)navigator.clipboard.writeText(url).then(done,()=>prompt("Copy this link:",url));else prompt("Copy this link:",url);};
  if(navigator.share)navigator.share({title,text:title+" ("+m(q().total)+" CAD)",url}).catch(e=>{if(e&&e.name!=="AbortError")fb();});else fb();};
-window.pdfQuote=()=>{const r=q(),{V,B}=parts(r),tr=x=>`<tr><td>${esc(x[0])}</td><td>${m(x[1])}</td></tr>`,c=state().c;
- $("pv").innerHTML=`<div class="h"><h2>Forged Decals</h2><div>Montreal · Quote</div></div><div><b>Customer:</b> ${esc(c.n||"—")}${c.ct?`<br><b>Contact:</b> ${esc(c.ct)}`:""}<br><b>Date:</b> ${fdate(Date.now())}</div>
- <div class="k">VINYL</div><table>${V.map(tr).join("")||'<tr><td>—</td><td>$0</td></tr>'}<tr class="s"><td>Vinyl subtotal</td><td>${m(r.vinylSub)}</td></tr></table>
- <div class="k">LABOUR</div><table>${B.map(tr).join("")||'<tr><td>Included</td><td>$0</td></tr>'}<tr class="s"><td>Labour subtotal</td><td>${m(r.labourSub)}</td></tr></table>
- <div class="t"><span>TOTAL</span><span>${m(r.total)}</span></div><div style="text-align:right;color:#555">CAD, no tax</div><p style="margin-top:24px"><b>How would you like to pay? (e-transfer or cash)</b></p>`;
- const t=document.title;document.title="Forged Decals quote"+(c.n?" - "+c.n:"");setTimeout(()=>{window.print();document.title=t;},50);};
+let curNo=null;
+function nextNo(){const d=new Date(),p="Q-"+d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-";
+ const used=getS().map(x=>x.no||"").filter(n=>n.startsWith(p)).map(n=>+n.slice(p.length)||0);return p+String(Math.max(0,...used)+1).padStart(2,"0");}
+function items(r){const V=[],B=[];r.lines.forEach((x,i)=>{if(!x.L)return;const d=L[i];
+ V.push([x.q,`Decal ${i+1} – ${d.w||0}"×${d.h||0}" ${d.vinyl} (${x.L}" billed)`,x.q?x.vinyl/x.q:0,x.vinyl]);
+ if(x.install)B.push([x.q,`Installation (size) – decal ${i+1}`,x.install/x.q,x.install]);
+ if(x.labour)B.push([x.q,`Labour ${x.hrs} h – decal ${i+1}`,x.labour/x.q,x.labour]);});
+ r.times.forEach(x=>{if(x.cost>0)B.push([x.h,`${x.name} (hours)`,x.rate,x.cost]);});return {V,B};}
+window.pdfQuote=()=>{const r=q(),{V,B}=items(r),c=state().c,f=n=>"$"+(+n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+ const sv=getS().find(x=>x.id===curId);if(sv&&!sv.no){sv.no=nextNo();putS(getS().map(x=>x.id===sv.id?sv:x));}
+ const no=sv?sv.no:(curNo||(curNo=nextNo())),dt=sv?sv.date:Date.now(),ymd=t=>new Date(t).toLocaleDateString("en-CA");
+ const tr=x=>`<tr><td class="q">${+(+x[0]).toFixed(2)}</td><td>${esc(x[1])}</td><td class="r">${f(x[2])}</td><td class="r">${f(x[3])}</td></tr>`;
+ const to=[c.n||"—"].concat(c.ct?[c.ct]:[]).map(esc).join("<br>");
+ $("pv").innerHTML=`<div class="top"><div class="biz"><b>KIAN PAGADOR</b><br>Forged Decals<br>Montreal, Quebec, Canada<br>kiandpagador@gmail.com<br>438-355-8889</div>
+ <div class="ttl"><b>QUOTE</b>Quote No.: ${no}<br>Date: ${ymd(dt)}<br>Valid Until: ${ymd(dt+30*864e5)}<br>Page: 1</div></div>
+ <div class="to"><div><b>Bill to:</b><br>${to}</div><div><b>Service / Ship to:</b><br>${to}</div></div>
+ <table><thead><tr><th class="q">Quantity</th><th>Description</th><th class="r">Unit Price</th><th class="r">Amount</th></tr></thead><tbody>
+ <tr class="grp"><td></td><td>VINYL</td><td></td><td></td></tr>${V.map(tr).join("")}
+ <tr class="grp"><td></td><td>LABOUR</td><td></td><td></td></tr>${B.map(tr).join("")||`<tr><td class="q"></td><td>Included</td><td class="r"></td><td class="r">$0.00</td></tr>`}
+ <tr class="end"><td colspan="4"></td></tr>
+ <table class="tots" style="margin-top:0"><tr><td class="r">Vinyl Subtotal:</td><td class="r">${f(r.vinylSub)}</td></tr><tr><td class="r">Labour Subtotal:</td><td class="r">${f(r.labourSub)}</td></tr><tr class="b"><td class="r">Total Amount (CAD, no tax):</td><td class="r">${f(r.total)}</td></tr></table>
+ <div class="ft">Comment: Quote – prices valid for 30 days.<br>Sold By: Kian Pagador</div><p><b>How would you like to pay? (e-transfer or cash)</b></p><div class="ty">Thank you for your business.</div>`;
+ const t=document.title;document.title="Forged Decals quote "+no+(c.n?" - "+c.n:"");setTimeout(()=>{window.print();document.title=t;},50);};
 drawSaved();
 let ok=false;const hm=location.hash.match(/^#q=(.+)$/);if(hm){try{ok=load(dec(hm[1]));}catch(e){alert("Couldn't open that quote link");}}
 if(!ok)addLine();}
