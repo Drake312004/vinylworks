@@ -29,8 +29,11 @@ button{font-size:17px;font-weight:700;border:0;border-radius:10px;min-height:52p
 <h1>VINYL<span>WORKS</span></h1><div class="sub">Forged Decals · Montreal · Quote calculator (CAD, no tax)</div>
 <div id="lines"></div>
 <button class="add" onclick="addLine()">+ Add decal</button>
-<div class="card" style="margin-top:12px"><b>TIME</b>
+<div class="card" style="margin-top:12px"><b>INSTALLATION</b>
+<div class="tog"><input type="checkbox" id="inst_all" onchange="upd()"> Install all decals ($10 per 10" billed)</div>
 <div class="row" style="grid-template-columns:2fr 1fr"><div><label>Installation time (h)</label><input type="number" id="t_install" min="0" step="0.25" value="0" inputmode="decimal"></div><div><label>$/h</label><input type="number" id="r_install" min="0" step="1" value="30" inputmode="decimal"></div></div>
+</div>
+<div class="card" style="margin-top:12px"><b>TIME</b>
 <div class="row" style="grid-template-columns:2fr 1fr"><div><label>Design time (h)</label><input type="number" id="t_design" min="0" step="0.25" value="0" inputmode="decimal"></div><div><label>$/h</label><input type="number" id="r_design" min="0" step="1" value="30" inputmode="decimal"></div></div>
 <div class="row" style="grid-template-columns:2fr 1fr"><div><label>Prep time (h)</label><input type="number" id="t_prep" min="0" step="0.25" value="0" inputmode="decimal"></div><div><label>$/h</label><input type="number" id="r_prep" min="0" step="1" value="30" inputmode="decimal"></div>
 <div class="card"><b>Breakdown</b><div id="bd"></div></div>
@@ -66,13 +69,12 @@ function draw(){$("lines").innerHTML=L.map((d,i)=>`<div class="card">${L.length>
 <div class="row"><div><label>Width"</label><input inputmode="decimal" type="number" value="${d.w}" oninput="L_(${i},'w',this.value)"></div>
 <div><label>Height"</label><input inputmode="decimal" type="number" value="${d.h}" oninput="L_(${i},'h',this.value)"></div>
 <div><label>Qty</label><input inputmode="numeric" type="number" min="1" value="${d.qty}" oninput="L_(${i},'qty',this.value)"></div></div>
-<label>Vinyl</label><select onchange="L_(${i},'vinyl',this.value)">${Object.keys(VINYL).map(k=>`<option ${k===d.vinyl?"selected":""}>${k}</option>`).join("")}</select>
-<div class="tog"><input type="checkbox" ${d.install?"checked":""} onchange="L_(${i},'install',this.checked)"> Installation</div></div>`).join("");upd();}
+<label>Vinyl</label><select onchange="L_(${i},'vinyl',this.value)">${Object.keys(VINYL).map(k=>`<option ${k===d.vinyl?"selected":""}>${k}</option>`).join("")}</select></div>`).join("");upd();}
 window.L_=(i,k,v)=>{L[i][k]=v;upd();};
 TIME_KEYS.forEach(([k])=>{const v=localStorage.getItem("vw_rate_"+k);if(v!==null)$("r_"+k).value=v;$("r_"+k).oninput=e=>{localStorage.setItem("vw_rate_"+k,e.target.value);upd();};$("t_"+k).oninput=upd;});
-function q(){const t={};TIME_KEYS.forEach(([k])=>t[k]={h:$("t_"+k).value,rate:$("r_"+k).value});return calcQuote(L,t);}
+function q(){const t={};TIME_KEYS.forEach(([k])=>t[k]={h:$("t_"+k).value,rate:$("r_"+k).value});const ia=$("inst_all").checked;return calcQuote(L.map(d=>({...d,install:ia})),t);}
 function parts(r){const V=[],B=[];r.lines.forEach((x,i)=>{if(!x.L)return;const d=L[i],n=`Decal ${i+1} (${x.q}× ${d.w||0}"×${d.h||0}" ${d.vinyl}, ${x.L}" billed)`;
- V.push([n,x.vinyl]);if(x.install)B.push([`Installation – decal ${i+1}`,x.install]);if(x.labour)B.push([`Labour ${x.hrs} h – decal ${i+1}`+(x.q>1?` ×${x.q}`:""),x.labour]);});
+ V.push([n,x.vinyl]);if(x.install)B.push([`Installation (size) – decal ${i+1}`,x.install]);if(x.labour)B.push([`Labour ${x.hrs} h – decal ${i+1}`+(x.q>1?` ×${x.q}`:""),x.labour]);});
  r.times.forEach(x=>{if(x.cost>0)B.push([`${x.name} (${x.h} h × ${m(x.rate)}/h)`,x.cost]);});return {V,B};}
 function upd(){const r=q(),{V,B}=parts(r),row=(a,b)=>`<div class="line"><span>${a}</span><span>${m(b)}</span></div>`;let h="";
  if(V.length){h+=`<div class="line" style="color:#ff2d2d"><b>VINYL</b></div>`+V.map(x=>row(...x)).join("")+`<div class="line"><b>Vinyl subtotal</b><b>${m(r.vinylSub)}</b></div>`;
