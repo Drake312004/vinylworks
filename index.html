@@ -24,9 +24,15 @@ button{font-size:17px;font-weight:700;border:0;border-radius:10px;min-height:52p
 .bar{position:fixed;left:0;right:0;bottom:0;background:#000d;backdrop-filter:blur(8px);border-top:2px solid #ff2d2d;padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px}
 .tot{flex:1;font-size:32px;font-weight:900;font-style:italic}.tot small{display:block;font-size:11px;color:#888;font-style:normal;letter-spacing:2px}
 .copy{background:#ff2d2d;color:#fff}details summary{cursor:pointer;font-weight:700;min-height:40px}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.sec{background:#26262c;color:#fff;border:1px solid #444}
+.sq{display:flex;align-items:center;gap:8px;border-top:1px solid #2a2a30;padding:8px 0}.sq .i{flex:1;font-size:14px}.sq .i small{color:#888;display:block}.sq button{min-height:40px;font-size:14px}.op{background:#ff2d2d;color:#fff}
+#pv{display:none}
+@media print{body{background:#fff!important;color:#000;padding:0}body>*:not(#pv){display:none!important}#pv{display:block!important;font:14px/1.5 Arial,sans-serif;color:#000;padding:24px}
+#pv h2{margin:0;font-size:28px;font-style:italic;letter-spacing:2px}#pv .h{border-bottom:3px solid #c00;padding-bottom:8px;margin-bottom:14px}#pv table{width:100%;border-collapse:collapse;margin-bottom:10px}#pv td{padding:4px 0;border-bottom:1px solid #ddd}#pv td:last-child{text-align:right;white-space:nowrap}#pv .s td{font-weight:700;border-bottom:2px solid #000}#pv .t{font-size:20px;font-weight:900;display:flex;justify-content:space-between;margin-top:10px}#pv .k{color:#c00;font-weight:700;margin-top:10px}}
 </style><link rel="manifest" href="manifest.json"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="VINYL WORKS">
 <link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"></head><body>
 <h1>VINYL<span>WORKS</span></h1><div class="sub">Forged Decals · Montreal · Quote calculator (CAD, no tax)</div>
+<div class="card"><b>CUSTOMER</b><label>Customer name</label><input id="c_name" placeholder="Name" autocomplete="off"><label>Contact (optional)</label><input id="c_contact" placeholder="Phone or email" autocomplete="off"></div>
 <div id="lines"></div>
 <button class="add" onclick="addLine()">+ Add decal</button>
 <div class="card" style="margin-top:12px"><b>INSTALLATION</b>
@@ -35,9 +41,12 @@ button{font-size:17px;font-weight:700;border:0;border-radius:10px;min-height:52p
 </div>
 <div class="card" style="margin-top:12px"><b>TIME</b>
 <div class="row" style="grid-template-columns:2fr 1fr"><div><label>Design time (h)</label><input type="number" id="t_design" min="0" step="0.25" value="0" inputmode="decimal"></div><div><label>$/h</label><input type="number" id="r_design" min="0" step="1" value="30" inputmode="decimal"></div></div>
-<div class="row" style="grid-template-columns:2fr 1fr"><div><label>Prep time (h)</label><input type="number" id="t_prep" min="0" step="0.25" value="0" inputmode="decimal"></div><div><label>$/h</label><input type="number" id="r_prep" min="0" step="1" value="30" inputmode="decimal"></div>
+<div class="row" style="grid-template-columns:2fr 1fr"><div><label>Prep time (h)</label><input type="number" id="t_prep" min="0" step="0.25" value="0" inputmode="decimal"></div><div><label>$/h</label><input type="number" id="r_prep" min="0" step="1" value="30" inputmode="decimal"></div></div>
+</div>
 <div class="card"><b>Breakdown</b><div id="bd"></div></div>
 <div class="card" id="colcard" style="display:none"><b>VINYL BY COLOUR</b><div id="col"></div></div>
+<div class="card" id="qacts"><b>QUOTE</b><div class="acts"><button class="sec" onclick="saveQuote()">💾 Save quote</button><button class="sec" onclick="shareQuote()">🔗 Share link</button><button class="sec" onclick="pdfQuote()">📄 PDF</button><button class="sec" onclick="newQuote()">＋ New</button></div>
+<details style="margin-top:8px"><summary>Saved quotes (<span id="scount">0</span>)</summary><div id="saved"></div></details></div>
 <div class="card"><details><summary>🔒 Material & profit</summary><div id="prof"></div></details></div>
 <div class="bar"><div class="tot"><small>TOTAL</small><span id="total">$0</span></div><button class="copy" onclick="copyQuote()">Copy quote</button></div>
 <script>
@@ -90,6 +99,32 @@ window.copyQuote=()=>{const r=q(),{V,B}=parts(r);let t="FORGED DECALS – Quote\
  const done=()=>alert("Quote copied ✅");
  if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,()=>fb(t));else fb(t);
  function fb(s){const a=document.createElement("textarea");a.value=s;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done();}};
-addLine();}
-</script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");</script>
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function state(){const t={};TIME_KEYS.forEach(([k])=>t[k]={h:$("t_"+k).value,rate:$("r_"+k).value});return {v:1,c:{n:$("c_name").value,ct:$("c_contact").value},l:L.map(d=>({w:d.w,h:d.h,qty:d.qty,vinyl:d.vinyl})),ia:$("inst_all").checked,t};}
+function load(s){if(!s||!Array.isArray(s.l))return false;L=s.l.map(d=>({w:d.w||"",h:d.h||"",qty:d.qty||1,vinyl:VINYL[d.vinyl]?d.vinyl:"gloss black",install:false}));if(!L.length)L.push({w:"",h:"",qty:1,vinyl:"gloss black",install:false});
+ $("c_name").value=(s.c&&s.c.n)||"";$("c_contact").value=(s.c&&s.c.ct)||"";$("inst_all").checked=!!s.ia;TIME_KEYS.forEach(([k])=>{const x=(s.t||{})[k]||{};$("t_"+k).value=x.h||0;if(x.rate!=null&&x.rate!=="")$("r_"+k).value=x.rate;});draw();return true;}
+const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const dec=s=>{s=s.replace(/-/g,"+").replace(/_/g,"/");while(s.length%4)s+="=";return JSON.parse(decodeURIComponent(escape(atob(s))));};
+const SK="vw_saved_quotes",getS=()=>{try{return JSON.parse(localStorage.getItem(SK))||[]}catch(e){return []}},putS=a=>localStorage.setItem(SK,JSON.stringify(a));
+const fdate=ts=>new Date(ts).toLocaleDateString("en-CA",{year:"numeric",month:"short",day:"numeric"});
+let curId=null;
+window.saveQuote=()=>{const a=getS(),s=state(),tot=q().total,now=Date.now();const i=a.findIndex(x=>x.id===curId);
+ if(i>=0){a[i]={...a[i],s,total:tot,date:now};}else{curId="q"+now;a.unshift({id:curId,s,total:tot,date:now});}putS(a);drawSaved();alert("Quote saved ✅");};
+window.openQuote=id=>{const x=getS().find(x=>x.id===id);if(x&&load(x.s)){curId=id;scrollTo(0,0);}};
+window.delQuote=id=>{const x=getS().find(x=>x.id===id);if(!x||!confirm(`Delete quote for ${x.s.c.n||"(no name)"}?`))return;putS(getS().filter(y=>y.id!==id));if(curId===id)curId=null;drawSaved();};
+window.newQuote=()=>{if(!confirm("Start a new blank quote? (unsaved changes are lost)"))return;curId=null;load({l:[],c:{},ia:false,t:{}});history.replaceState(null,"",location.pathname);};
+function drawSaved(){const a=getS();$("scount").textContent=a.length;$("saved").innerHTML=a.length?a.map(x=>`<div class="sq"><div class="i"><b>${esc(x.s.c.n||"(no name)")}</b> · ${m(x.total)}<small>${fdate(x.date)}${x.s.c.ct?" · "+esc(x.s.c.ct):""}</small></div><button class="op" onclick="openQuote('${x.id}')">Open</button><button class="rm" style="float:none" onclick="delQuote('${x.id}')">Delete</button></div>`).join(""):'<div class="line">No saved quotes yet</div>';}
+window.shareQuote=()=>{const url=location.origin+location.pathname+"#q="+enc(state()),n=$("c_name").value,title="Forged Decals quote"+(n?" – "+n:"");
+ const fb=()=>{const done=()=>alert("Share link copied ✅");if(navigator.clipboard)navigator.clipboard.writeText(url).then(done,()=>prompt("Copy this link:",url));else prompt("Copy this link:",url);};
+ if(navigator.share)navigator.share({title,text:title+" ("+m(q().total)+" CAD)",url}).catch(e=>{if(e&&e.name!=="AbortError")fb();});else fb();};
+window.pdfQuote=()=>{const r=q(),{V,B}=parts(r),tr=x=>`<tr><td>${esc(x[0])}</td><td>${m(x[1])}</td></tr>`,c=state().c;
+ $("pv").innerHTML=`<div class="h"><h2>Forged Decals</h2><div>Montreal · Quote</div></div><div><b>Customer:</b> ${esc(c.n||"—")}${c.ct?`<br><b>Contact:</b> ${esc(c.ct)}`:""}<br><b>Date:</b> ${fdate(Date.now())}</div>
+ <div class="k">VINYL</div><table>${V.map(tr).join("")||'<tr><td>—</td><td>$0</td></tr>'}<tr class="s"><td>Vinyl subtotal</td><td>${m(r.vinylSub)}</td></tr></table>
+ <div class="k">LABOUR</div><table>${B.map(tr).join("")||'<tr><td>Included</td><td>$0</td></tr>'}<tr class="s"><td>Labour subtotal</td><td>${m(r.labourSub)}</td></tr></table>
+ <div class="t"><span>TOTAL</span><span>${m(r.total)}</span></div><div style="text-align:right;color:#555">CAD, no tax</div><p style="margin-top:24px"><b>How would you like to pay? (e-transfer or cash)</b></p>`;
+ const t=document.title;document.title="Forged Decals quote"+(c.n?" - "+c.n:"");setTimeout(()=>{window.print();document.title=t;},50);};
+drawSaved();
+let ok=false;const hm=location.hash.match(/^#q=(.+)$/);if(hm){try{ok=load(dec(hm[1]));}catch(e){alert("Couldn't open that quote link");}}
+if(!ok)addLine();}
+</script><div id="pv"></div><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");</script>
 </body></html>
