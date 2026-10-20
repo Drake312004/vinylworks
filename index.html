@@ -24,6 +24,11 @@ button{font-size:17px;font-weight:700;border:0;border-radius:10px;min-height:52p
 .bar{position:fixed;left:0;right:0;bottom:0;background:#000d;backdrop-filter:blur(8px);border-top:2px solid #ff2d2d;padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px}
 .tot{flex:1;font-size:32px;font-weight:900;font-style:italic}.tot small{display:block;font-size:11px;color:#888;font-style:normal;letter-spacing:2px}
 .copy{background:#ff2d2d;color:#fff}details summary{cursor:pointer;font-weight:700;min-height:40px}
+.owner-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.owner-acts{display:flex;gap:8px;flex-shrink:0}.owner-acts button,#bar-lock{min-height:44px;font-size:14px;padding:0 12px}
+.owner-err{color:#ff6b6b;font-size:13px;margin-top:6px}
+#owner-gate p,#owner-change-form p{margin:8px 0 0;color:#aaa;font-size:13px}
+[hidden]{display:none!important}
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.sec{background:#26262c;color:#fff;border:1px solid #444}
 .sq{display:flex;align-items:center;gap:8px;border-top:1px solid #2a2a30;padding:8px 0}.sq .i{flex:1;font-size:14px}.sq .i small{color:#888;display:block}.sq button{min-height:40px;font-size:14px}.op{background:#ff2d2d;color:#fff}
 #pv{display:none}
@@ -50,8 +55,26 @@ button{font-size:17px;font-weight:700;border:0;border-radius:10px;min-height:52p
 <div class="card" id="colcard" style="display:none"><b>VINYL BY COLOUR</b><div id="col"></div></div>
 <div class="card" id="qacts"><b>QUOTE</b><div class="acts"><button class="sec" onclick="saveQuote()">💾 Save quote</button><button class="sec" onclick="shareQuote()">🔗 Share link</button><button class="sec" onclick="pdfQuote()">📄 PDF</button><button class="sec" onclick="newQuote()">＋ New</button></div>
 <details style="margin-top:8px"><summary>Saved quotes (<span id="scount">0</span>)</summary><div id="saved"></div></details></div>
-<div class="card"><details><summary>🔒 Material & profit</summary><div id="prof"></div></details></div>
-<div class="bar"><div class="tot"><small>TOTAL</small><span id="total">$0</span></div><button class="copy" onclick="copyQuote()">Copy quote</button></div>
+<div class="card" id="owner-card">
+<div class="owner-head"><b>Material &amp; profit</b><div class="owner-acts"><button type="button" class="sec" id="owner-change" hidden>Change PIN</button><button type="button" class="sec" id="owner-lock" hidden>Lock</button></div></div>
+<div id="owner-starter" class="note" hidden>Still using the starter PIN on this device. Change it so this phone stops accepting the starter PIN.</div>
+<div id="owner-gate">
+<p>Owner only. Material cost and profit stay hidden until you unlock this device.</p>
+<label for="owner-pin">PIN</label><input id="owner-pin" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+<button type="button" class="copy" id="owner-unlock" style="width:100%;margin-top:8px">Unlock</button>
+<div id="owner-err" class="owner-err" hidden></div>
+</div>
+<div id="owner-change-form" hidden>
+<p id="owner-change-help">Set a new PIN or passphrase (at least 4 characters). It replaces the old one on this device only.</p>
+<div id="owner-current-wrap"><label for="owner-current">Current PIN</label><input id="owner-current" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false"></div>
+<label for="owner-new">New PIN or passphrase</label><input id="owner-new" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false">
+<label for="owner-new2">Confirm</label><input id="owner-new2" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false">
+<div class="acts"><button type="button" class="copy" id="owner-save-pin">Save PIN</button><button type="button" class="sec" id="owner-cancel-pin">Cancel</button></div>
+<div id="owner-change-err" class="owner-err" hidden></div>
+</div>
+<div id="owner-body" hidden><div id="prof"></div></div>
+</div>
+<div class="bar"><div class="tot"><small>TOTAL</small><span id="total">$0</span></div><button type="button" class="sec" id="bar-lock" hidden>Lock</button><button class="copy" onclick="copyQuote()">Copy quote</button></div>
 <script>
 /*CALC-START*/
 const VINYL={"matte black":{t:"std",c:4.36/36},"matte white":{t:"std",c:4.36/36},"gloss black":{t:"std",c:4.36/36},"gloss white":{t:"std",c:4.36/36},"reflective white":{t:"refl",c:27.23/36},"reflective black":{t:"refl",c:33.58/36},"yellow 021":{t:"std",c:4.91/36},"king blue 049":{t:"std",c:4.25/36},"silver grey 090":{t:"std",c:4.25/36}};
@@ -94,8 +117,55 @@ function upd(){const r=q(),{V,B}=parts(r),row=(a,b)=>`<div class="line"><span>${
  if(r.lines.some(x=>x.confirm))h+=`<div class="note">⚠ above 100": confirm price</div>`;
  h+=`<div class="line" style="margin-top:8px;font-size:18px"><b>TOTAL</b><b>${m(r.total)}</b></div>`;}
  $("bd").innerHTML=h||'<div class="line">Enter a size to start</div>';$("total").textContent=m(r.total);
- $("prof").innerHTML=`<div class="line" style="color:#ff2d2d"><b>VINYL BY COLOUR</b> <span style="color:#888">(+5" all sides)</span></div>`+colHtml()+`<div class="line" style="margin-top:8px"><span>Quote total</span><span>${m(r.total)}</span></div><div class="line"><b>Profit</b><b>${m(r.profit)}</b></div>`;
- const c=byColour(L);$("colcard").style.display=c.rows.length>1?"":"none";$("col").innerHTML=colHtml();}
+ if(ownerOpen){
+  $("prof").innerHTML=`<div class="line" style="color:#ff2d2d"><b>VINYL BY COLOUR</b> <span style="color:#888">(+5" all sides)</span></div>`+colHtml()+`<div class="line" style="margin-top:8px"><span>Quote total</span><span>${m(r.total)}</span></div><div class="line"><b>Profit</b><b>${m(r.profit)}</b></div>`;
+  const c=byColour(L);$("colcard").style.display=c.rows.length>1?"":"none";$("col").innerHTML=colHtml();
+ }else{$("prof").innerHTML="";$("col").innerHTML="";$("colcard").style.display="none";}}
+const OWNER_DEFAULT={salt:"7d37f0443a1bbf46d09efda9e617ecc0",hash:"57f5eccdcf935f295962ec8a09b2327b3aad94923d433e9ff1d04d43bbf20ed4"};
+const OWNER_CRED_KEY="vw_owner_cred",OWNER_OPEN_KEY="vw_owner_open";
+let ownerOpen=false,ownerBusy=false;
+function ownerCred(){try{const c=JSON.parse(localStorage.getItem(OWNER_CRED_KEY)||"");if(c&&typeof c.salt==="string"&&/^[0-9a-f]{64}$/.test(c.hash))return c;}catch(e){}return OWNER_DEFAULT;}
+function usingStarterPin(){const c=ownerCred();return c.salt===OWNER_DEFAULT.salt&&c.hash===OWNER_DEFAULT.hash;}
+async function hashPin(pin,salt){const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(salt+"\0"+pin));return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");}
+function hashesMatch(a,b){if(typeof a!=="string"||typeof b!=="string"||a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0;}
+function randomSalt(){const b=new Uint8Array(16);crypto.getRandomValues(b);return [...b].map(x=>x.toString(16).padStart(2,"0")).join("");}
+function readOpen(){try{return localStorage.getItem(OWNER_OPEN_KEY)==="1";}catch(e){return false;}}
+function writeOpen(on){try{if(on)localStorage.setItem(OWNER_OPEN_KEY,"1");else localStorage.removeItem(OWNER_OPEN_KEY);}catch(e){}}
+function paintOwner(){$("owner-gate").hidden=ownerOpen;$("owner-body").hidden=!ownerOpen;$("owner-lock").hidden=!ownerOpen;$("owner-change").hidden=!ownerOpen;$("bar-lock").hidden=!ownerOpen;$("owner-starter").hidden=!(ownerOpen&&usingStarterPin());
+ if(!ownerOpen){$("owner-change-form").hidden=true;$("prof").innerHTML="";$("col").innerHTML="";$("colcard").style.display="none";$("owner-pin").value="";$("owner-current").value="";$("owner-new").value="";$("owner-new2").value="";$("owner-err").hidden=true;}}
+function showOwnerErr(id,msg){const el=$(id);el.textContent=msg;el.hidden=!msg;}
+function showChangeForm(first){$("owner-change-form").hidden=false;showOwnerErr("owner-change-err","");$("owner-current").value="";$("owner-new").value="";$("owner-new2").value="";
+ $("owner-current-wrap").hidden=!!first;
+ $("owner-change-help").textContent=first?"This device still accepts the starter PIN. Set a new PIN or passphrase (at least 4 characters). It is stored only on this device.":"Set a new PIN or passphrase (at least 4 characters). It replaces the old one on this device only.";
+ $("owner-cancel-pin").textContent=first?"Not now":"Cancel";$(first?"owner-new":"owner-current").focus();}
+async function tryUnlock(){if(ownerBusy)return;const pin=$("owner-pin").value;showOwnerErr("owner-err","");
+ if(!pin){showOwnerErr("owner-err","Enter the owner PIN.");return;}
+ if(!(window.crypto&&crypto.subtle)){showOwnerErr("owner-err","Unlock needs a secure page (https).");return;}
+ ownerBusy=true;const first=usingStarterPin();let ok=false;
+ try{ok=hashesMatch(await hashPin(pin,ownerCred().salt),ownerCred().hash);}catch(e){ownerBusy=false;showOwnerErr("owner-err","Couldn't check the PIN in this browser.");return;}
+ ownerBusy=false;
+ if(!ok){showOwnerErr("owner-err","Wrong PIN.");$("owner-pin").value="";$("owner-pin").focus();return;}
+ ownerOpen=true;writeOpen(true);$("owner-pin").value="";paintOwner();upd();if(first)showChangeForm(true);}
+function lockOwner(){ownerOpen=false;writeOpen(false);paintOwner();upd();$("owner-pin").focus();}
+async function saveNewPin(){if(ownerBusy)return;const a=$("owner-new").value,b=$("owner-new2").value,cur=$("owner-current").value,needCur=!$("owner-current-wrap").hidden;showOwnerErr("owner-change-err","");
+ if(needCur&&!cur){showOwnerErr("owner-change-err","Enter the current PIN.");return;}
+ if(a.length<4){showOwnerErr("owner-change-err","Use at least 4 characters.");return;}
+ if(a!==b){showOwnerErr("owner-change-err","Those PINs don't match.");return;}
+ if(!(window.crypto&&crypto.subtle)){showOwnerErr("owner-change-err","Saving a PIN needs a secure page (https).");return;}
+ ownerBusy=true;
+ try{const cred=ownerCred();
+  if(needCur&&!hashesMatch(await hashPin(cur,cred.salt),cred.hash)){ownerBusy=false;showOwnerErr("owner-change-err","Current PIN is wrong.");return;}
+  if(hashesMatch(await hashPin(a,OWNER_DEFAULT.salt),OWNER_DEFAULT.hash)){ownerBusy=false;showOwnerErr("owner-change-err","That is the starter PIN. Choose a different one.");return;}
+  const salt=randomSalt(),hash=await hashPin(a,salt);localStorage.setItem(OWNER_CRED_KEY,JSON.stringify({salt,hash}));}
+ catch(e){ownerBusy=false;showOwnerErr("owner-change-err","Couldn't save the PIN in this browser.");return;}
+ ownerBusy=false;$("owner-current").value="";$("owner-new").value="";$("owner-new2").value="";$("owner-change-form").hidden=true;paintOwner();}
+function initOwner(){ownerOpen=readOpen();paintOwner();
+ $("owner-unlock").onclick=tryUnlock;$("owner-lock").onclick=lockOwner;$("bar-lock").onclick=lockOwner;
+ $("owner-change").onclick=()=>showChangeForm(false);$("owner-cancel-pin").onclick=()=>{$("owner-change-form").hidden=true;$("owner-current").value="";$("owner-new").value="";$("owner-new2").value="";};
+ $("owner-save-pin").onclick=saveNewPin;
+ $("owner-pin").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();tryUnlock();}});
+ $("owner-new2").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();saveNewPin();}});
+ window.addEventListener("storage",e=>{if(e.key!==OWNER_OPEN_KEY&&e.key!==OWNER_CRED_KEY)return;ownerOpen=readOpen();paintOwner();upd();});}
 function colHtml(){const c=byColour(L);if(!c.rows.length)return '<div class="line">No vinyl yet</div>';
  return c.rows.map(x=>`<div class="line"><span>${x.colour}: ${x.sqft.toFixed(2)} sq ft (padded) × $${x.rate.toFixed(2)}/sq ft</span><span>$${x.cost.toFixed(2)}</span></div>`).join("")+`<div class="line"><span>Application tape (AT65): ${c.sqft.toFixed(2)} sq ft × $${TAPE.toFixed(3)}/sq ft</span><span>$${c.tape.toFixed(2)}</span></div><div class="line"><b>Total material</b><b>$${c.total.toFixed(2)}</b></div>`;}
 window.copyQuote=()=>{const r=q(),{V,B}=parts(r);let t="FORGED DECALS – Quote\n\nVINYL\n"+V.map(x=>`• ${x[0]}: ${m(x[1])}`).join("\n")+`\nVinyl subtotal: ${m(r.vinylSub)}\n\nLABOUR\n`+(B.length?B.map(x=>`• ${x[0]}: ${m(x[1])}`).join("\n"):"• Included: $0")+`\nLabour subtotal: ${m(r.labourSub)}\n\nTOTAL: ${m(r.total)} CAD\n\nHow would you like to pay, e-transfer or cash? Please send your full name and email or address.`;
@@ -117,6 +187,7 @@ window.openQuote=id=>{const x=getS().find(x=>x.id===id);if(x&&load(x.s)){curId=i
 window.delQuote=id=>{const x=getS().find(x=>x.id===id);if(!x||!confirm(`Delete quote for ${x.s.c.n||"(no name)"}?`))return;putS(getS().filter(y=>y.id!==id));if(curId===id)curId=null;drawSaved();};
 window.newQuote=()=>{if(!confirm("Start a new blank quote? (unsaved changes are lost)"))return;curId=null;curNo=null;load({l:[],c:{},ia:false,t:{}});history.replaceState(null,"",location.pathname);};
 function drawSaved(){const a=getS();$("scount").textContent=a.length;$("saved").innerHTML=a.length?a.map(x=>`<div class="sq"><div class="i"><b>${esc(x.s.c.n||"(no name)")}</b> · ${m(x.total)}<small>${x.no?x.no+" · ":""}${fdate(x.date)}${x.s.c.ct?" · "+esc(x.s.c.ct):""}</small></div><button class="op" onclick="openQuote('${x.id}')">Open</button><button class="rm" style="float:none" onclick="delQuote('${x.id}')">Delete</button></div>`).join(""):'<div class="line">No saved quotes yet</div>';}
+initOwner();
 window.shareQuote=()=>{const url=location.origin+location.pathname+"#q="+enc(state()),n=$("c_name").value,title="Forged Decals quote"+(n?" – "+n:"");
  const fb=()=>{const done=()=>alert("Share link copied ✅");if(navigator.clipboard)navigator.clipboard.writeText(url).then(done,()=>prompt("Copy this link:",url));else prompt("Copy this link:",url);};
  if(navigator.share)navigator.share({title,text:title+" ("+m(q().total)+" CAD)",url}).catch(e=>{if(e&&e.name!=="AbortError")fb();});else fb();};
@@ -146,5 +217,5 @@ window.pdfQuote=()=>{const r=q(),{V,B}=items(r),c=state().c,f=n=>"$"+(+n).toLoca
 drawSaved();
 let ok=false;const hm=location.hash.match(/^#q=(.+)$/);if(hm){try{ok=load(dec(hm[1]));}catch(e){alert("Couldn't open that quote link");}}
 if(!ok)addLine();}
-</script><div id="pv"></div><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");</script>
+</script><div id="pv"></div><script>if("serviceWorker" in navigator){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register("sw.js");if(had){let once=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(once)return;once=true;location.reload();});}}</script>
 </body></html>
