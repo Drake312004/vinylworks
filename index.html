@@ -54,7 +54,7 @@ button{font-size:17px;font-weight:700;border:0;border-radius:10px;min-height:52p
 <div class="bar"><div class="tot"><small>TOTAL</small><span id="total">$0</span></div><button class="copy" onclick="copyQuote()">Copy quote</button></div>
 <script>
 /*CALC-START*/
-const VINYL={"matte black":{t:"std",c:4.36/36},"matte white":{t:"std",c:4.36/36},"gloss black":{t:"std",c:4.36/36},"gloss white":{t:"std",c:4.36/36},"reflective white":{t:"refl",c:27.23/36},"reflective black":{t:"refl",c:33.58/36},"yellow 021":{t:"std",c:4.91/36},"king blue 049":{t:"std",c:4.25/36},"silver grey 090":{t:"std",c:4.25/36}};
+const VINYL={"matte black":{t:"std",c:4.36/36},"matte white":{t:"std",c:4.36/36},"gloss black":{t:"std",c:4.36/36},"gloss white":{t:"std",c:4.36/36},"reflective white":{t:"refl",c:27.23/36},"reflective black":{t:"refl",c:33.58/36},"yellow 021":{t:"std",c:4.91/36},"king blue 049":{t:"std",c:4.25/36},"silver grey 090":{t:"std",c:4.25/36},"red 032":{t:"std",c:4.91/36}};
 function billable(w,h){const L=Math.max(+w||0,+h||0);return L<=0?0:Math.ceil(L/10-1e-9)*10;}
 function calcLine(d){const q=Math.max(0,Math.floor(+d.qty||0)),L=billable(d.w,d.h),v=VINYL[d.vinyl];const u=L/10;
  const vinyl=u*(v.t==="refl"?30:20)*q,install=d.install?u*10*q:0;const hrs=L>=100?1.5:L>=50?1:0,labour=hrs*30*q;
@@ -66,7 +66,7 @@ function calcQuote(lines,time){time=time||{};const r=lines.map(calcLine);const t
  const total=r.reduce((s,x)=>s+x.total,0)+design,mat=byColour(lines),material=mat.total;
  const vinylSub=r.reduce((s,x)=>s+x.vinyl,0),labourSub=r.reduce((s,x)=>s+x.install+x.labour,0)+design;
  return {times,mat,lines:r,design,vinylSub,labourSub,total,material,profit:total-material};}
-const SQFT={"matte black":4.36/6,"matte white":4.36/6,"gloss black":4.36/6,"gloss white":4.36/6,"reflective white":27.23/6,"reflective black":33.58/6,"yellow 021":4.91/6,"king blue 049":4.25/6,"silver grey 090":4.25/6};
+const SQFT={"matte black":4.36/6,"matte white":4.36/6,"gloss black":4.36/6,"gloss white":4.36/6,"reflective white":27.23/6,"reflective black":33.58/6,"yellow 021":4.91/6,"king blue 049":4.25/6,"silver grey 090":4.25/6,"red 032":4.91/6};
 const TAPE=222.59/100/6;
 function byColour(lines){const o={};lines.forEach(d=>{const w=+d.w||0,h=+d.h||0,q=Math.max(0,Math.floor(+d.qty||0));if(!(w>0&&h>0&&q))return;o[d.vinyl]=(o[d.vinyl]||0)+(w+10)*(h+10)*q/144;});
  const rows=Object.keys(o).map(k=>({colour:k,sqft:o[k],rate:SQFT[k],cost:o[k]*SQFT[k]}));const sqft=rows.reduce((s,x)=>s+x.sqft,0),cost=rows.reduce((s,x)=>s+x.cost,0),tape=sqft*TAPE;
