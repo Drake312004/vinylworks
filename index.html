@@ -13,6 +13,7 @@
 <style>
 *{box-sizing:border-box}body{margin:0;background:#0d0d0f;color:#eee;font:16px/1.4 system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top) 12px 140px}
 h1{font-style:italic;letter-spacing:3px;margin:16px 0 2px;font-size:30px}h1 span{color:#ff2d2d}.sub{color:#888;font-size:13px;margin-bottom:14px}
+.seg{display:flex;gap:0;margin:2px 0 4px}.seg button{flex:1;padding:12px 6px;font-size:15px;background:#0d0d0f;color:#aaa;border:1px solid #333}.seg button:first-child{border-radius:8px 0 0 8px}.seg button:last-child{border-radius:0 8px 8px 0}.seg button.on{background:#ff2d2d;color:#fff;border-color:#ff2d2d;font-weight:bold}
 .card{background:#18181c;border:1px solid #2a2a30;border-left:4px solid #ff2d2d;border-radius:12px;padding:12px;margin-bottom:12px}
 label{display:block;font-size:12px;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin:6px 0 3px}
 input,select{width:100%;font-size:18px;padding:12px;background:#0d0d0f;color:#fff;border:1px solid #333;border-radius:8px;min-height:48px}
@@ -27,11 +28,16 @@ button{font-size:17px;font-weight:700;border:0;border-radius:10px;min-height:52p
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.sec{background:#26262c;color:#fff;border:1px solid #444}
 .sq{display:flex;align-items:center;gap:8px;border-top:1px solid #2a2a30;padding:8px 0}.sq .i{flex:1;font-size:14px}.sq .i small{color:#888;display:block}.sq button{min-height:40px;font-size:14px}.op{background:#ff2d2d;color:#fff}
 #pv{display:none}
-@media print{@page{size:letter;margin:0.55in 0.7in}body{background:#fff!important;color:#000;padding:0}body>*:not(#pv){display:none!important}#pv{display:block!important;background:#fff;font:10pt/1.4 Helvetica,Arial,sans-serif;color:#000}#pv *{background:transparent;color:#000}
-#pv .top{display:flex;justify-content:space-between}#pv .biz b{font-size:16pt}#pv .ttl{text-align:right}#pv .ttl b{font-size:22pt;display:block;line-height:1.1;margin-bottom:6px}
-#pv .to{display:flex;margin-top:26px}#pv .to div{width:50%}#pv table{width:100%;border-collapse:collapse;margin-top:26px}#pv th{text-align:left;border-top:1px solid #000;border-bottom:1px solid #000;padding:3px 0}
-#pv td{padding:3px 0;vertical-align:top}#pv .r{text-align:right;white-space:nowrap}#pv .q{width:70px}#pv tr.grp td{font-weight:bold;padding-top:8px}#pv tr.end td{border-top:1px solid #000;padding:0;height:6px}
-#pv .tots{margin-left:auto;width:340px}#pv .tots td{padding:2px 0}#pv .tots .b td{font-weight:bold}#pv .ft{margin-top:22px}#pv .ty{margin-top:16px;font-style:italic}}
+@media print{@page{size:letter;margin:0.4in 0.6in}body{background:#fff!important;color:#000;padding:0}body>*:not(#pv){display:none!important}#pv{display:block!important;background:#fff;font:10pt/1.4 Helvetica,Arial,sans-serif;color:#000}#pv *{background:transparent;color:#000}
+#pv .top{display:flex;justify-content:space-between;align-items:flex-start}#pv .top img{height:46px}#pv .ttl b{font-size:26pt;display:block;text-align:right;letter-spacing:.5px;margin-bottom:6px}
+#pv .meta td{padding:1px 0 1px 18px;text-align:right}#pv .lb{font-size:7pt;font-weight:bold;color:#6b6b6b!important;letter-spacing:.6px;text-transform:uppercase}
+#pv .rule{border-top:1.5px solid #111;margin:12px 0 14px}#pv .to{display:flex}#pv .to>div{width:50%}#pv .to b.n{font-size:10.5pt}
+#pv table.it{width:100%;border-collapse:collapse;margin-top:18px}#pv .it th{background:#111!important;color:#fff!important;font-size:7.5pt;letter-spacing:.6px;padding:6px 8px;text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#pv .it td{padding:5px 8px}#pv .it tr.z td{background:#f4f4f4!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}#pv .it tr.grp td{font-weight:bold;font-size:7.5pt;letter-spacing:.6px;color:#6b6b6b!important;padding-top:10px}#pv .it tbody tr:last-child td{border-bottom:1px solid #d9d9d9}
+#pv .r,#pv .it th.r{text-align:right;white-space:nowrap}#pv .tots{margin:12px 0 0 auto;width:250px;border-collapse:collapse}#pv .tots td{padding:4px 10px}#pv .tots .m td:first-child{color:#6b6b6b!important}
+#pv .tots .b td{background:#efefef!important;font-weight:bold;padding:8px 10px;-webkit-print-color-adjust:exact;print-color-adjust:exact}#pv .tots .b td.r{font-size:12pt}
+#pv .en{font-weight:normal;color:#9a9a9a!important;font-size:.82em;letter-spacing:0;text-transform:none}#pv .en.d{display:block;font-size:8pt;margin-top:1px}#pv .en.big{display:block;text-align:right;font-size:10pt;margin:-4px 0 8px}#pv .en.sm{font-size:8pt}#pv .tots .bd td{font-weight:bold}#pv .tots{width:340px}#pv .tots td:first-child{white-space:nowrap}#pv .it td{vertical-align:top}#pv .lb .en{font-size:6.5pt}#pv th .en{color:#bbb!important;font-size:7pt}
+#pv .pay{margin-top:16px;border:0!important;padding:0!important}#pv .ft{margin-top:18px;break-inside:avoid;text-align:center;border-top:1px solid #d9d9d9;padding-top:8px}#pv .ft small{font-size:7pt;color:#6b6b6b!important}}
 </style><link rel="manifest" href="manifest.json"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="VINYL WORKS">
 <link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"></head><body>
 <h1>VINYL<span>WORKS</span></h1><div class="sub">Forged Design graphique · Montréal · Quote calculator (CAD, no tax)</div>
@@ -46,9 +52,14 @@ button{font-size:17px;font-weight:700;border:0;border-radius:10px;min-height:52p
 <div class="row" style="grid-template-columns:2fr 1fr"><div><label>Design time (h)</label><input type="number" id="t_design" min="0" step="0.25" value="0" inputmode="decimal"></div><div><label>$/h</label><input type="number" id="r_design" min="0" step="1" value="30" inputmode="decimal"></div></div>
 <div class="row" style="grid-template-columns:2fr 1fr"><div><label>Prep time (h)</label><input type="number" id="t_prep" min="0" step="0.25" value="0" inputmode="decimal"></div><div><label>$/h</label><input type="number" id="r_prep" min="0" step="1" value="30" inputmode="decimal"></div></div>
 </div>
+<div class="card" style="margin-top:12px"><b>CONDITIONS / TERMS</b>
+<label>Conditions de paiement / Terms</label><select id="d_tm" onchange="tmUI()"><option value="rec">Payable à la réception / Due on receipt</option><option value="comp">Solde payable à la fin des travaux / Balance due on completion</option><option value="custom">Autre / Custom…</option></select>
+<div id="d_tcw" style="display:none"><label>Conditions personnalisées / Custom terms</label><input id="d_tc" placeholder="ex. Net 14" autocomplete="off"></div>
+<div class="row" style="grid-template-columns:1fr 1fr"><div><label>Acompte / Deposit $</label><input type="number" id="d_dep" min="0" step="1" value="" placeholder="0" inputmode="decimal"></div><div><label>Paiement / Payment</label><select id="d_pm"><option value="interac">Interac</option><option value="cash">Comptant / Cash</option></select></div></div>
+</div>
 <div class="card"><b>Breakdown</b><div id="bd"></div></div>
 <div class="card" id="colcard" style="display:none"><b>VINYL BY COLOUR</b><div id="col"></div></div>
-<div class="card" id="qacts"><b>QUOTE</b><div class="acts"><button class="sec" onclick="saveQuote()">💾 Save quote</button><button class="sec" onclick="shareQuote()">🔗 Share link</button><button class="sec" onclick="pdfQuote()">📄 PDF</button><button class="sec" onclick="newQuote()">＋ New</button></div>
+<div class="card" id="qacts"><b>QUOTE</b><div class="acts"><button class="pay" onclick="saveQuote()">💾 Save quote</button><button class="sec" onclick="shareQuote()">🔗 Share link</button><div class="seg" style="grid-column:1/-1"><button id="k_q" class="on" onclick="setKind('q')">Devis / Quote</button><button id="k_i" onclick="setKind('i')">Facture / Invoice</button></div><button class="sec" onclick="pdfQuote()">📄 PDF</button><button class="sec" onclick="newQuote()">＋ New</button></div>
 <details style="margin-top:8px"><summary>Saved quotes (<span id="scount">0</span>)</summary><div id="saved"></div></details></div>
 <div class="card"><details><summary>🔒 Material & profit</summary><div id="prof"></div></details></div>
 <div class="bar"><div class="tot"><small>TOTAL</small><span id="total">$0</span></div><button class="copy" onclick="copyQuote()">Copy quote</button></div>
@@ -98,14 +109,14 @@ function upd(){const r=q(),{V,B}=parts(r),row=(a,b)=>`<div class="line"><span>${
  const c=byColour(L);$("colcard").style.display=c.rows.length>1?"":"none";$("col").innerHTML=colHtml();}
 function colHtml(){const c=byColour(L);if(!c.rows.length)return '<div class="line">No vinyl yet</div>';
  return c.rows.map(x=>`<div class="line"><span>${x.colour}: ${x.sqft.toFixed(2)} sq ft (padded) × $${x.rate.toFixed(2)}/sq ft</span><span>$${x.cost.toFixed(2)}</span></div>`).join("")+`<div class="line"><span>Application tape (AT65): ${c.sqft.toFixed(2)} sq ft × $${TAPE.toFixed(3)}/sq ft</span><span>$${c.tape.toFixed(2)}</span></div><div class="line"><b>Total material</b><b>$${c.total.toFixed(2)}</b></div>`;}
-window.copyQuote=()=>{const r=q(),{V,B}=parts(r);let t="FORGED GRAPHIC DESIGN – Quote\n\nVINYL\n"+V.map(x=>`• ${x[0]}: ${m(x[1])}`).join("\n")+`\nVinyl subtotal: ${m(r.vinylSub)}\n\nLABOUR\n`+(B.length?B.map(x=>`• ${x[0]}: ${m(x[1])}`).join("\n"):"• Included: $0")+`\nLabour subtotal: ${m(r.labourSub)}\n\nTOTAL: ${m(r.total)} CAD\n\nHow would you like to pay, e-transfer or cash? Please send your full name and email or address.`;
+window.copyQuote=()=>{const r=q(),{V,B}=parts(r);let t="FORGED GRAPHIC DESIGN – Quote\n\nVINYL\n"+V.map(x=>`• ${x[0]}: ${m(x[1])}`).join("\n")+`\nVinyl subtotal: ${m(r.vinylSub)}\n\nLABOUR\n`+(B.length?B.map(x=>`• ${x[0]}: ${m(x[1])}`).join("\n"):"• Included: $0")+`\nLabour subtotal: ${m(r.labourSub)}\n\nTOTAL: ${m(r.total)} CAD`+(()=>{const T=terms(),p=Math.min(T.dep,r.total);return (p>0?`\nDeposit / Acompte: ${m(p)}\nBalance / Solde: ${m(r.total-p)}`:"")+`\nTerms / Conditions: `+(T.custom?T.fr:`${T.en} / ${T.fr}`);})()+`\n\nHow would you like to pay, e-transfer or cash? Please send your full name and email or address.`;
  const done=()=>alert("Quote copied ✅");
  if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,()=>fb(t));else fb(t);
  function fb(s){const a=document.createElement("textarea");a.value=s;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done();}};
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function state(){const t={};TIME_KEYS.forEach(([k])=>t[k]={h:$("t_"+k).value,rate:$("r_"+k).value});return {v:1,c:{n:$("c_name").value,ct:$("c_contact").value},l:L.map(d=>({w:d.w,h:d.h,qty:d.qty,vinyl:d.vinyl})),ia:$("inst_all").checked,t};}
+function state(){const t={};TIME_KEYS.forEach(([k])=>t[k]={h:$("t_"+k).value,rate:$("r_"+k).value});return {v:1,c:{n:$("c_name").value,ct:$("c_contact").value},l:L.map(d=>({w:d.w,h:d.h,qty:d.qty,vinyl:d.vinyl})),ia:$("inst_all").checked,t,d:{tm:$("d_tm").value,tc:$("d_tc").value,dep:$("d_dep").value,pm:$("d_pm").value}};}
 function load(s){if(!s||!Array.isArray(s.l))return false;L=s.l.map(d=>({w:d.w||"",h:d.h||"",qty:d.qty||1,vinyl:VINYL[d.vinyl]?d.vinyl:"gloss black",install:false}));if(!L.length)L.push({w:"",h:"",qty:1,vinyl:"gloss black",install:false});
- $("c_name").value=(s.c&&s.c.n)||"";$("c_contact").value=(s.c&&s.c.ct)||"";$("inst_all").checked=!!s.ia;TIME_KEYS.forEach(([k])=>{const x=(s.t||{})[k]||{};$("t_"+k).value=x.h||0;if(x.rate!=null&&x.rate!=="")$("r_"+k).value=x.rate;});draw();return true;}
+ $("c_name").value=(s.c&&s.c.n)||"";$("c_contact").value=(s.c&&s.c.ct)||"";$("inst_all").checked=!!s.ia;TIME_KEYS.forEach(([k])=>{const x=(s.t||{})[k]||{};$("t_"+k).value=x.h||0;if(x.rate!=null&&x.rate!=="")$("r_"+k).value=x.rate;});const dd=s.d||{};$("d_tm").value=["rec","comp","custom"].includes(dd.tm)?dd.tm:"rec";$("d_tc").value=dd.tc||"";$("d_dep").value=dd.dep||"";$("d_pm").value=dd.pm==="cash"?"cash":"interac";tmUI();draw();return true;}
 const enc=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
 const dec=s=>{s=s.replace(/-/g,"+").replace(/_/g,"/");while(s.length%4)s+="=";return JSON.parse(decodeURIComponent(escape(atob(s))));};
 const SK="vw_saved_quotes",getS=()=>{try{return JSON.parse(localStorage.getItem(SK))||[]}catch(e){return []}},putS=a=>localStorage.setItem(SK,JSON.stringify(a));
@@ -113,36 +124,62 @@ const fdate=ts=>new Date(ts).toLocaleDateString("en-CA",{year:"numeric",month:"s
 let curId=null;
 window.saveQuote=()=>{const a=getS(),s=state(),tot=q().total,now=Date.now();const i=a.findIndex(x=>x.id===curId);
  if(i>=0){a[i]={...a[i],s,total:tot,date:now,no:a[i].no||nextNo()};}else{const no=curNo||nextNo();curId="q"+now;a.unshift({id:curId,no,s,total:tot,date:now});}putS(a);drawSaved();alert("Quote saved ✅");};
-window.openQuote=id=>{const x=getS().find(x=>x.id===id);if(x&&load(x.s)){curId=id;curNo=null;scrollTo(0,0);}};
+window.openQuote=id=>{const x=getS().find(x=>x.id===id);if(x&&load(x.s)){curId=id;curNo=null;curIno=null;scrollTo(0,0);}};
 window.delQuote=id=>{const x=getS().find(x=>x.id===id);if(!x||!confirm(`Delete quote for ${x.s.c.n||"(no name)"}?`))return;putS(getS().filter(y=>y.id!==id));if(curId===id)curId=null;drawSaved();};
-window.newQuote=()=>{if(!confirm("Start a new blank quote? (unsaved changes are lost)"))return;curId=null;curNo=null;load({l:[],c:{},ia:false,t:{}});history.replaceState(null,"",location.pathname);};
+window.newQuote=()=>{if(!confirm("Start a new blank quote? (unsaved changes are lost)"))return;curId=null;curNo=null;curIno=null;load({l:[],c:{},ia:false,t:{}});history.replaceState(null,"",location.pathname);};
 function drawSaved(){const a=getS();$("scount").textContent=a.length;$("saved").innerHTML=a.length?a.map(x=>`<div class="sq"><div class="i"><b>${esc(x.s.c.n||"(no name)")}</b> · ${m(x.total)}<small>${x.no?x.no+" · ":""}${fdate(x.date)}${x.s.c.ct?" · "+esc(x.s.c.ct):""}</small></div><button class="op" onclick="openQuote('${x.id}')">Open</button><button class="rm" style="float:none" onclick="delQuote('${x.id}')">Delete</button></div>`).join(""):'<div class="line">No saved quotes yet</div>';}
 window.shareQuote=()=>{const url=location.origin+location.pathname+"#q="+enc(state()),n=$("c_name").value,title="Forged Graphic Design quote"+(n?" – "+n:"");
  const fb=()=>{const done=()=>alert("Share link copied ✅");if(navigator.clipboard)navigator.clipboard.writeText(url).then(done,()=>prompt("Copy this link:",url));else prompt("Copy this link:",url);};
  if(navigator.share)navigator.share({title,text:title+" ("+m(q().total)+" CAD)",url}).catch(e=>{if(e&&e.name!=="AbortError")fb();});else fb();};
-let curNo=null;
-function nextNo(){const d=new Date(),p="Q-"+d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-";
- const used=getS().map(x=>x.no||"").filter(n=>n.startsWith(p)).map(n=>+n.slice(p.length)||0);return p+String(Math.max(0,...used)+1).padStart(2,"0");}
-function items(r){const V=[],B=[];r.lines.forEach((x,i)=>{if(!x.L)return;const d=L[i];
- V.push([x.q,`Decal ${i+1} – ${d.w||0}"×${d.h||0}" ${d.vinyl} (${x.L}" billed)`,x.q?x.vinyl/x.q:0,x.vinyl]);
- if(x.install)B.push([x.q,`Installation (size) – decal ${i+1}`,x.install/x.q,x.install]);
- if(x.labour)B.push([x.q,`Labour ${x.hrs} h – decal ${i+1}`,x.labour/x.q,x.labour]);});
- r.times.forEach(x=>{if(x.cost>0)B.push([x.h,`${x.name} (hours)`,x.rate,x.cost]);});return {V,B};}
-window.pdfQuote=()=>{const r=q(),{V,B}=items(r),c=state().c,f=n=>"$"+(+n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
- const sv=getS().find(x=>x.id===curId);if(sv&&!sv.no){sv.no=nextNo();putS(getS().map(x=>x.id===sv.id?sv:x));}
- const no=sv?sv.no:(curNo||(curNo=nextNo())),dt=sv?sv.date:Date.now(),ymd=t=>new Date(t).toLocaleDateString("en-CA");
- const tr=x=>`<tr><td class="q">${+(+x[0]).toFixed(2)}</td><td>${esc(x[1])}</td><td class="r">${f(x[2])}</td><td class="r">${f(x[3])}</td></tr>`;
- const to=[c.n||"—"].concat(c.ct?[c.ct]:[]).map(esc).join("<br>");
- $("pv").innerHTML=`<div class="top"><div class="biz"><img src="logo.png" alt="FORGED" style="height:60px;display:block;margin-bottom:8px"><b>Forged Design graphique</b><br>Kian Drake Pagador<br>Montréal, QC<br>forgedgraphicdesign@gmail.com<br>438-355-8889<br>Business No. / NEQ: 2282690140</div>
- <div class="ttl"><b>QUOTE</b>Quote No.: ${no}<br>Date: ${ymd(dt)}<br>Valid Until: ${ymd(dt+30*864e5)}<br>Page: 1</div></div>
- <div class="to"><div><b>Bill to:</b><br>${to}</div><div><b>Service / Ship to:</b><br>${to}</div></div>
- <table><thead><tr><th class="q">Quantity</th><th>Description</th><th class="r">Unit Price</th><th class="r">Amount</th></tr></thead><tbody>
- <tr class="grp"><td></td><td>VINYL</td><td></td><td></td></tr>${V.map(tr).join("")}
- <tr class="grp"><td></td><td>LABOUR</td><td></td><td></td></tr>${B.map(tr).join("")||`<tr><td class="q"></td><td>Included</td><td class="r"></td><td class="r">$0.00</td></tr>`}
- <tr class="end"><td colspan="4"></td></tr>
- <table class="tots" style="margin-top:0"><tr><td class="r">Vinyl Subtotal:</td><td class="r">${f(r.vinylSub)}</td></tr><tr><td class="r">Labour Subtotal:</td><td class="r">${f(r.labourSub)}</td></tr><tr class="b"><td class="r">Total Amount (CAD, no tax):</td><td class="r">${f(r.total)}</td></tr></table>
- <div class="ft">Comment: Quote – prices valid for 30 days.<br>Sold By: Kian Drake Pagador</div><p><b>How would you like to pay? (e-transfer or cash)</b></p><div class="ty">Thank you for your business.</div>`;
- const t=document.title;document.title="Forged Graphic Design quote "+no+(c.n?" - "+c.n:"");setTimeout(()=>{window.print();document.title=t;},50);};
+let curNo=null,curIno=null;
+function nextNo(P="Q-",F="no"){const d=new Date(),p=P+d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-";
+ const used=getS().map(x=>x[F]||"").filter(n=>n.startsWith(p)).map(n=>+n.slice(p.length)||0);return p+String(Math.max(0,...used)+1).padStart(2,"0");}
+window.tmUI=()=>{$("d_tcw").style.display=$("d_tm").value==="custom"?"":"none";};
+let kind="q";window.setKind=k=>{kind=k;$("k_q").className=k==="q"?"on":"";$("k_i").className=k==="i"?"on":"";};
+const VFR={"matte black":"noir mat","matte white":"blanc mat","gloss black":"noir lustré","gloss white":"blanc lustré","reflective white":"blanc réfléchissant","reflective black":"noir réfléchissant","yellow 021":"jaune 021","king blue 049":"bleu roi 049","silver grey 090":"gris argent 090","red 032":"rouge 032"};
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const TFR={install:["Pose (heures)","Installation time (hours)"],design:["Design personnalisé (heures)","Custom design (hours)"],prep:["Préparation et maquette (heures)","Prep and mock-up (hours)"]};
+function items(r){const V=[],B=[];r.lines.forEach((x,i)=>{if(!x.L)return;const d=L[i],sz=`${d.w||0}"×${d.h||0}"`;
+ V.push([x.q,`Autocollant en vinyle ${VFR[d.vinyl]||d.vinyl} ${sz} (${x.L}" facturés)`,`${cap(d.vinyl)} vinyl decal ${sz} (${x.L}" billed)`,x.q?x.vinyl/x.q:0,x.vinyl]);
+ if(x.install)B.push([x.q,`Pose (selon la taille) – autocollant ${i+1}`,`Installation (size) – decal ${i+1}`,x.install/x.q,x.install]);
+ if(x.labour)B.push([x.q,`Main-d'œuvre ${x.hrs} h – autocollant ${i+1}`,`Labour ${x.hrs} h – decal ${i+1}`,x.labour/x.q,x.labour]);});
+ r.times.forEach((x,j)=>{const k=TIME_KEYS[j][0];if(x.cost>0)B.push([x.h,...(TFR[k]||[x.name,x.name]),x.rate,x.cost]);});return {V,B};}
+const fm=n=>(+n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,"\u202f")+"\u00a0$";
+function terms(){const d=state().d,dep=Math.max(0,+d.dep||0);
+ if(d.tm==="custom"&&d.tc.trim())return {fr:d.tc.trim(),en:"",dep,pm:d.pm,due:false,custom:true};
+ if(d.tm==="comp")return {fr:"Solde payable à la fin des travaux",en:"Balance due on completion",sfr:"À la fin des travaux",sen:"On completion",dep,pm:d.pm,due:false};
+ return {fr:"Payable à la réception",en:"Due on receipt",sfr:"À la réception",sen:"On receipt",dep,pm:d.pm,due:true};}
+const B2=(fr,en)=>`${fr}${en?` <span class="en">/ ${en}</span>`:""}`;
+window.pdfQuote=()=>{const r=q(),{V,B}=items(r),c=state().c,T=terms(),inv=kind==="i";
+ const a=getS(),sv=a.find(x=>x.id===curId);
+ if(sv){if(!sv.no)sv.no=nextNo();if(inv&&!sv.ino)sv.ino=nextNo("KPI-","ino");putS(a.map(x=>x.id===sv.id?sv:x));}
+ const no=inv?(sv?sv.ino:(curIno||(curIno=nextNo("KPI-","ino")))):(sv?sv.no:(curNo||(curNo=nextNo())));
+ const dt=inv?Date.now():(sv?sv.date:Date.now()),ymd=t=>new Date(t).toLocaleDateString("en-CA");
+ const tot=r.total,paid=Math.min(T.dep,tot),bal=tot-paid;
+ const meta=[[inv?"N° de facture":"N° de devis",inv?"Invoice No.":"Quote No.",no],["Date","",ymd(dt)]];
+ if(inv){if(T.due)meta.push(["Date d'échéance","Due date",ymd(dt)]);}else meta.push(["Valide jusqu'au","Valid until",ymd(dt+30*864e5)]);
+ meta.push(["Conditions","Terms",T.custom?esc(T.fr):B2(T.sfr,T.sen)]);
+ let z=0;const row=x=>`<tr${z++%2?' class="z"':''}><td>${esc(x[1])}<span class="en d">${esc(x[2])}</span></td><td class="r">${+(+x[0]).toFixed(2)}</td><td class="r">${fm(x[3])}</td><td class="r">${fm(x[4])}</td></tr>`;
+ const pmfr=T.pm==="cash"?B2("Comptant","Cash"):B2("Virement Interac","E-transfer");
+ let st="";if(inv){const bs=fm(bal),dd=ymd(dt);let sf,se;
+  if(paid>0&&paid>=tot)[sf,se]=["Payée en totalité","Paid in full"];
+  else if(paid>0&&T.due)[sf,se]=[`Acompte reçu — solde de ${bs} dû le ${dd}`,`Deposit received, ${bs} due by ${dd}`];
+  else if(paid>0)[sf,se]=[`Acompte reçu — solde de ${bs} payable à la fin des travaux`,`Deposit received, ${bs} due on completion`];
+  else if(T.custom)[sf,se]=[`Selon les conditions : ${esc(T.fr)} — ${bs}`,`As per terms, ${bs}`];
+  else if(T.due)[sf,se]=[`Payable à la réception — ${bs}`,`Due on receipt, ${bs}`];
+  else [sf,se]=[`Payable à la fin des travaux — ${bs}`,`Due on completion, ${bs}`];
+  st=`Statut : ${sf}<br><span class="en sm">Status: ${se}</span>`;}
+ $("pv").innerHTML=`<div class="top"><img src="logo.png" alt="FORGED Design graphique"><div class="ttl"><b>${inv?"FACTURE":"DEVIS"}</b><span class="en big">${inv?"Invoice":"Quote"}</span><table class="meta">${meta.map(m=>`<tr><td class="lb">${B2(m[0].toUpperCase(),m[1])}</td><td>${m[2]}</td></tr>`).join("")}</table></div></div>
+ <div class="rule"></div>
+ <div class="to"><div><div class="lb">${B2("DE","From")}</div><b class="n">Forged Design graphique</b><br>Kian Drake Pagador<br>Montréal (Québec)<br>forgedgraphicdesign@gmail.com<br>438-355-8889<br>N° d'entreprise (NEQ) : 2282690140 <span class="en">/ Business No.</span></div><div><div class="lb">${inv?B2("FACTURER À","Bill to"):B2("PRÉPARÉ POUR","Prepared for")}</div><b class="n">${esc(c.n||"—")}</b>${c.ct?"<br>"+esc(c.ct):""}</div></div>
+ <table class="it"><thead><tr><th>DESCRIPTION</th><th class="r">${B2("QTÉ","Qty")}</th><th class="r">${B2("PRIX","Rate")}</th><th class="r">${B2("MONTANT","Amount")}</th></tr></thead><tbody>
+ <tr class="grp"><td colspan="4">${B2("VINYLE","Vinyl")}</td></tr>${V.map(row).join("")}<tr class="grp"><td colspan="4">${B2("MAIN-D'ŒUVRE","Labour")}</td></tr>${B.map(row).join("")||`<tr><td>Inclus<span class="en d">Included</span></td><td></td><td></td><td class="r">${fm(0)}</td></tr>`}
+ </tbody></table>
+ <table class="tots"><tr class="m"><td>${B2("Sous-total vinyle","Vinyl subtotal")}</td><td class="r">${fm(r.vinylSub)}</td></tr><tr class="m"><td>${B2("Sous-total main-d'œuvre","Labour subtotal")}</td><td class="r">${fm(r.labourSub)}</td></tr><tr class="b"><td>TOTAL (CAD)</td><td class="r">${fm(tot)}</td></tr>
+ ${paid>0?`<tr class="m"><td>${inv?B2("Acompte reçu","Deposit received"):B2("Acompte","Deposit")}</td><td class="r">-${fm(paid)}</td></tr><tr class="bd"><td>${inv?B2("Solde dû","Balance due"):B2("Solde","Balance")}</td><td class="r">${fm(bal)}</td></tr>`:""}</table>
+ <div class="pay"><div class="lb">${B2("PAIEMENT","Payment")}</div>Mode : ${pmfr}<br>Virement Interac à forgedgraphicdesign@gmail.com <span class="en">/ Interac e-Transfer to</span><br>${inv?st:`Conditions : ${T.custom?esc(T.fr):B2(T.fr,T.en)}<br>Devis valide 30 jours <span class="en">/ Quote valid for 30 days</span>`}</div>
+ <div class="ft"><b>Merci de votre confiance.</b><br><span class="en sm">Thank you for your business.</span><br><small>Forged Design graphique · Montréal (Québec) · forgedgraphicdesign@gmail.com · 438-355-8889 · NEQ 2282690140</small></div>`;
+ const t=document.title;document.title="Forged Design graphique - "+(inv?"Facture ":"Devis ")+no+(c.n?" - "+c.n:"");setTimeout(()=>{window.print();document.title=t;},50);};
 drawSaved();
 let ok=false;const hm=location.hash.match(/^#q=(.+)$/);if(hm){try{ok=load(dec(hm[1]));}catch(e){alert("Couldn't open that quote link");}}
 if(!ok)addLine();}
