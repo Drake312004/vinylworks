@@ -16,6 +16,7 @@ function doPost(e) {
   try {
     const d = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     if (!TOKEN || d.token !== TOKEN) return out_({ ok: false, error: 'bad token' });
+    if (d.action === 'jobDone') return out_(jobDone_(d));
     const lock = LockService.getScriptLock();
     lock.waitLock(10000);
     try {
@@ -35,6 +36,54 @@ function doPost(e) {
   } catch (err) {
     return out_({ ok: false, error: String(err) });
   }
+}
+
+// ---- COMPLETED & PAID: email the PDF, save it to Drive, log it ----
+const MAIL_TO = 'forgedgraphicdesign@gmail.com';
+const FOLDER = 'Forged Invoices 2026';
+const JOB_TAB = 'COMPLETED JOBS';
+const JOB_HEADERS = ['INVOICE NO.', 'INVOICE DATE', 'COMPLETED DATE', 'PAID DATE', 'CLIENT', 'TOTAL',
+  'DEPOSIT', 'BALANCE', 'TERMS', 'PAYMENT METHOD', 'PAID', 'PDF LINK', 'UPDATED'];
+
+function jobDone_(d) {
+  const fn = String(d.filename || (d.invoiceNo || 'invoice') + '.pdf').replace(/[\\/:*?"<>|]/g, '_');
+  const blob = Utilities.newBlob(Utilities.base64Decode(String(d.pdfBase64 || '')), 'application/pdf', fn);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const it = DriveApp.getFoldersByName(FOLDER);
+    const folder = it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);
+    const old = folder.getFilesByName(fn);
+    while (old.hasNext()) old.next().setTrashed(true);   // replace an older copy of the same invoice
+    const file = folder.createFile(blob);
+    MailApp.sendEmail({ to: MAIL_TO, subject: String(d.subject || 'JOB COMPLETED & PAID'),
+      body: String(d.body || '') + '\n\nPDF in Drive: ' + file.getUrl(), attachments: [blob], name: 'VINYL WORKS' });
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sh = ss.getSheetByName(JOB_TAB);
+    if (!sh) {
+      sh = ss.insertSheet(JOB_TAB);
+      sh.getRange(1, 1, 1, JOB_HEADERS.length).setValues([JOB_HEADERS]).setFontWeight('bold');
+      sh.setFrozenRows(1);
+    }
+    const row = [str_(d.invoiceNo), str_(d.invoiceDate), str_(d.completedDate), str_(d.paidDate), str_(d.client),
+      num_(d.total), num_(d.deposit), num_(d.balance), str_(d.terms), str_(d.method), str_(d.paid || 'YES'),
+      file.getUrl(), new Date()];
+    const n = sh.getLastRow();
+    const nos = n > 1 ? sh.getRange(2, 1, n - 1, 1).getValues().map(r => String(r[0])) : [];
+    const i = nos.indexOf(String(d.invoiceNo));
+    const r = i >= 0 ? i + 2 : n + 1;
+    sh.getRange(r, 1, 1, row.length).setValues([row]);
+    sh.getRange(r, 6, 1, 3).setNumberFormat('$#,##0.00');
+    sh.getRange(r, 13).setNumberFormat('yyyy-mm-dd hh:mm');
+    return { ok: true, url: file.getUrl() };
+  } finally { lock.releaseLock(); }
+}
+
+/** Run once from the editor: asks for Gmail/Drive permission and sends a test email. */
+function testJobDone() {
+  const pdf = Utilities.newBlob('%PDF-1.1\n%test\n', 'application/pdf').getBytes();
+  Logger.log(JSON.stringify(jobDone_({ invoiceNo: 'KPI-TEST', subject: 'JOB COMPLETED & PAID - KPI-TEST - TEST - $0.00',
+    body: 'Test, delete me', pdfBase64: Utilities.base64Encode(pdf), filename: 'KPI-TEST.pdf', client: 'TEST', paid: 'YES' })));
 }
 
 function doGet() { return out_({ ok: true, service: 'VINYL WORKS confirm hook' }); }

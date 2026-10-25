@@ -72,7 +72,7 @@ input,select,textarea{border-color:#2c2c2c;border-radius:10px;background:#0d0d0d
 <label>Notes</label><textarea id="x_no" rows="2"></textarea></details></div></div>
 <div class="card"><b>TERMS</b><select id="qq_tm" onchange="qu()"><option value="rec">On receipt</option><option value="comp">On completion</option><option value="custom">Custom…</option></select><input id="qq_tc" style="display:none;margin-top:8px" placeholder="ex. Net 14" oninput="qu()">
 <label>Payment</label><div class="chip" id="qq_pm"><button data-v="interac" class="on" onclick="qp(this)">E-transfer</button><button data-v="cash" onclick="qp(this)">Cash</button></div><div class="hint" id="qq_cn" style="display:none">Cash: no invoice, quote only.</div></div>
-<div class="card"><div class="qa"><button class="ok full" onclick="qCopy()">📋 Copy message</button><button class="sec" onclick="qPdf('q')">📄 PDF Quote</button><button class="sec" id="qq_f" onclick="qPdf('i')">🧾 PDF Invoice</button><button class="pay" onclick="window.PDFMODE=1;qPdf('q')">⬇️ Save PDF Quote</button><button class="pay" id="qq_f2" onclick="window.PDFMODE=1;qPdf('i')">⬇️ Save PDF Invoice</button><button class="pay full" onclick="qConfirm()">✅ Confirm</button><button class="sec" id="qq_f3" onclick="qsync();saveInv()">🧾 Save invoice</button><button class="sec" onclick="tab('i')">📂 Invoices</button><button id="jcbq" class="full" style="display:none;background:#1a7f37;color:#fff;font-size:18px;font-weight:bold;min-height:56px" onclick="qsync();jobDone()">✅ JOB COMPLETED</button><div id="invstq" class="hint full"></div></div>
+<div class="card"><div class="qa"><button class="ok full" onclick="qCopy()">📋 Copy message</button><button class="sec" onclick="qPdf('q')">📄 PDF Quote</button><button class="sec" id="qq_f" onclick="qPdf('i')">🧾 PDF Invoice</button><button class="pay" onclick="window.PDFMODE=1;qPdf('q')">⬇️ Save PDF Quote</button><button class="pay" id="qq_f2" onclick="window.PDFMODE=1;qPdf('i')">⬇️ Save PDF Invoice</button><button class="pay full" onclick="qConfirm()">✅ Confirm</button><button class="sec" id="qq_f3" onclick="qsync();saveInv()">🧾 Save invoice</button><button class="sec" onclick="tab('i')">📂 Invoices</button><button id="jcbq" class="full" style="display:none;background:#1a7f37;color:#fff;font-size:18px;font-weight:bold;min-height:56px" onclick="qsync();jobDone()">✅ JOB COMPLETED</button><button id="jpbq" class="full" style="display:none;background:#0b5cad;color:#fff;font-size:16px;font-weight:bold;min-height:56px" onclick="qsync();jobPaid()">✅ COMPLETED &amp; PAID</button><div id="invstq" class="hint full"></div></div>
 <details style="margin-top:10px"><summary>Confirmed (<span id="cfn">0</span>)</summary><div id="cfl"></div></details>
 <details style="margin-top:4px"><summary>⚙️ Settings</summary><label>Google Sheet web-app URL</label><input id="st_u" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"><label>Token</label><input id="st_k" autocomplete="off"><button class="sec" style="width:100%;margin-top:8px" onclick="stSave()">Save</button></details></div>
 </div>
@@ -95,7 +95,7 @@ input,select,textarea{border-color:#2c2c2c;border-radius:10px;background:#0d0d0d
 </div>
 <div class="card"><b>Breakdown</b><div id="bd"></div></div>
 <div class="card" id="colcard" style="display:none"><b>VINYL BY COLOUR</b><div id="col"></div></div>
-<div class="card" id="qacts"><b>QUOTE</b><div class="acts"><button class="pay" onclick="saveQuote()">💾 Save quote</button><button class="sec" onclick="shareQuote()">🔗 Share link</button><button class="pay" onclick="saveInv()">🧾 Save invoice</button><button class="sec" onclick="tab('i')">📂 Invoices</button><button id="jcb" class="pay" style="grid-column:1/-1;display:none;background:#1a7f37;color:#fff;font-size:18px;font-weight:bold;min-height:56px" onclick="jobDone()">✅ JOB COMPLETED</button><div id="invst" class="hint" style="grid-column:1/-1"></div><div class="seg" style="grid-column:1/-1"><button id="k_q" class="on" onclick="setKind('q')">Quote</button><button id="k_i" onclick="setKind('i')">Invoice</button></div><button class="sec" onclick="pdfQuote()">📄 Print</button><button class="pay" onclick="savePdf()">⬇️ Save PDF</button><button class="sec" onclick="newQuote()">＋ New</button></div>
+<div class="card" id="qacts"><b>QUOTE</b><div class="acts"><button class="pay" onclick="saveQuote()">💾 Save quote</button><button class="sec" onclick="shareQuote()">🔗 Share link</button><button class="pay" onclick="saveInv()">🧾 Save invoice</button><button class="sec" onclick="tab('i')">📂 Invoices</button><button id="jcb" class="pay" style="grid-column:1/-1;display:none;background:#1a7f37;color:#fff;font-size:18px;font-weight:bold;min-height:56px" onclick="jobDone()">✅ JOB COMPLETED</button><button id="jpb" class="pay" style="grid-column:1/-1;display:none;background:#0b5cad;color:#fff;font-size:16px;font-weight:bold;min-height:56px" onclick="jobPaid()">✅ COMPLETED &amp; PAID</button><div id="invst" class="hint" style="grid-column:1/-1"></div><div class="seg" style="grid-column:1/-1"><button id="k_q" class="on" onclick="setKind('q')">Quote</button><button id="k_i" onclick="setKind('i')">Invoice</button></div><button class="sec" onclick="pdfQuote()">📄 Print</button><button class="pay" onclick="savePdf()">⬇️ Save PDF</button><button class="sec" onclick="newQuote()">＋ New</button></div>
 <details style="margin-top:8px"><summary>Saved quotes (<span id="scount">0</span>)</summary><div id="saved"></div></details></div>
 <div class="card"><details><summary>🔒 Material & profit</summary><div id="prof"></div></details></div>
 </div>
@@ -262,7 +262,7 @@ $("st_u").value=localStorage.getItem("vw_hook")||"";$("st_k").value=localStorage
 /* ---- SAVED INVOICES ---- */
 const IK="vw_invoices",getI=()=>{try{return JSON.parse(localStorage.getItem(IK))||[]}catch(e){return []}},putI=a=>localStorage.setItem(IK,JSON.stringify(a));
 let curInv=null;const ymd2=t=>new Date(t).toLocaleDateString("en-CA");
-function invUI(){const x=curInv&&getI().find(y=>y.id===curInv);const sh=x&&x.status==="Open"?"":"none";$("jcb").style.display=sh;$("jcbq").style.display=sh;
+function invUI(){const x=curInv&&getI().find(y=>y.id===curInv);const sh=x&&x.status==="Open"?"":"none";$("jcb").style.display=sh;$("jcbq").style.display=sh;$("jpb").style.display=sh;$("jpbq").style.display=sh;
  $("invstq").textContent=$("invst").textContent=x?`Invoice ${x.ino} · ${x.status}${x.completed?" "+ymd2(x.completed):""}${x.paid?" · Paid":""}`:"";window.INVDATE=x?x.created:0;}
 window.saveInv=()=>{if($("d_pm").value==="cash")return alert("Cash: no invoice.");const r=q();if(!r.total)return alert("Nothing to invoice yet");
  const s=state(),T=terms(),a=getI(),now=Date.now();let x=curInv&&a.find(y=>y.id===curInv);
@@ -277,10 +277,19 @@ const M2=n=>"$"+(+n||0).toFixed(2);
 function jobMail(x){const r=q(),{V,B}=items(r),c=x.client,T=terms(),dep=Math.min(T.dep,r.total),who=c.co||c.n||"—";
  const ad=[c.bs,[c.bc,c.bp].filter(Boolean).join(", "),c.bz].map(v=>(v||"").trim()).filter(Boolean).join(", ");
  const it=[...V,...B].map((y,i)=>`Item ${i+1}: ${y[2]||y[1]} | Qty: ${+(+y[0]).toFixed(2)} | Rate: ${M2(y[3])} | Amount: ${M2(y[4])}`);
- const subject=`JOB COMPLETED - ${x.ino} - ${who} - ${M2(r.total)}`;
+ const subject=`${x.paid?"JOB COMPLETED & PAID":"JOB COMPLETED"} - ${x.ino} - ${who} - ${M2(r.total)}`;
  const L2=[["Invoice No",x.ino],["Invoice Date",ymd2(x.created)],["Completed Date",ymd2(x.completed)],["Status",x.status],["Client Name",c.n],["Company",c.co],["Email/Contact",c.ct],["Phone",c.ph],["Billing Address",ad],["Service Address",c.sa],["PO No",c.po],["Client GST/QST",c.tx],["Notes",c.no]].map(([k,v])=>`${k}: ${v||""}`);
- const body=[...L2,"",...it,"",`Vinyl Subtotal: ${M2(r.vinylSub)}`,`Labour Subtotal: ${M2(r.labourSub)}`,`Total: ${M2(r.total)}`,`Deposit: ${M2(dep)}`,`Balance: ${M2(r.total-dep)}`,`Terms: ${T.custom?T.fr:T.sen+" / "+T.sfr}`,`Payment Method: ${T.pm==="cash"?"Cash":"Interac e-Transfer"}`].join("\n");
+ const body=[...L2,"",...it,"",`Vinyl Subtotal: ${M2(r.vinylSub)}`,`Labour Subtotal: ${M2(r.labourSub)}`,`Total: ${M2(r.total)}`,`Deposit: ${M2(dep)}`,`Balance: ${M2(r.total-dep)}`,`Terms: ${T.custom?T.fr:T.sen+" / "+T.sfr}`,`Payment Method: ${T.pm==="cash"?"Cash":"Interac e-Transfer"}`,...(x.paid?["Paid: Yes",`Paid Date: ${ymd2(x.paidDate)}`]:[])].join("\n");
  return {subject,body};}
+window.jobPaid=()=>{const a=getI(),x=a.find(y=>y.id===curInv);if(!x)return;if(!confirm(`Mark ${x.ino} as COMPLETED & PAID and send it to forgedgraphicdesign@gmail.com?`))return;
+ const now=Date.now();x.status="Completed";x.completed=now;x.paid=true;x.paidDate=now;x.s=state();x.total=q().total;putI(a);invUI();const ml=jobMail(x);window.PDFMAIL=ml;window.LASTMAIL=ml;
+ window.PDFHOOK=async(blob,fn,lbl)=>{const u=localStorage.getItem("vw_hook");if(!u){lbl.textContent="Not sent: no Google web-app URL in Settings. Use email below.";return false;}
+  try{const b64=await new Promise((y,n)=>{const r=new FileReader();r.onload=()=>y(String(r.result).split(",")[1]);r.onerror=n;r.readAsDataURL(blob);});
+   const p={token:localStorage.getItem("vw_tok")||"",action:"jobDone",invoiceNo:x.ino,subject:ml.subject,body:ml.body,pdfBase64:b64,filename:fn,
+    invoiceDate:ymd2(x.created),completedDate:ymd2(x.completed),paidDate:ymd2(x.paidDate),client:x.client.co||x.client.n||"",total:x.total,deposit:x.deposit,balance:x.total-(x.deposit||0),terms:x.terms,method:x.pm==="cash"?"Cash":"Interac e-Transfer",paid:"YES"};
+   window.LASTPOST=p;await fetch(u,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(p)});
+   lbl.textContent="Sent to forgedgraphicdesign@gmail.com ✅ "+fn;return true;}catch(e){lbl.textContent="Not sent ("+e.message+"). Use email below.";return false;}};
+ setKind("i");window.PDFMODE=1;pdfQuote();};
 window.jobDone=()=>{const a=getI(),x=a.find(y=>y.id===curInv);if(!x)return;if(!confirm(`Mark ${x.ino} as JOB COMPLETED and email it?`))return;
  x.status="Completed";x.completed=Date.now();x.s=state();x.total=q().total;putI(a);invUI();window.PDFMAIL=jobMail(x);window.LASTMAIL=window.PDFMAIL;setKind("i");window.PDFMODE=1;pdfQuote();};
 drawSaved();
@@ -303,9 +312,9 @@ window.mkPdf=async no=>{const pv=document.getElementById("pv"),st=document.creat
   const fn=(no||"document")+".pdf",blob=d.output("blob");window._lastPdf={blob,fn};
   busy.innerHTML="";busy.style.flexDirection="column";busy.style.gap="12px";
   const f=new File([blob],fn,{type:"application/pdf"}),btn=(t,fx)=>{const b=document.createElement("button");b.textContent=t;b.style.cssText="padding:14px 22px;font-size:16px;border-radius:10px;border:0;min-width:200px";b.onclick=fx;busy.appendChild(b);};
-  const lbl=document.createElement("div");lbl.textContent=fn;busy.appendChild(lbl);const ml=window.PDFMAIL;window.PDFMAIL=null;
+  const lbl=document.createElement("div");lbl.textContent=fn;busy.appendChild(lbl);const ml0=window.PDFMAIL,hk=window.PDFHOOK;window.PDFMAIL=null;window.PDFHOOK=null;const sent=hk?await hk(blob,fn,lbl):false,ml=sent?null:ml0;
   const dl=()=>{const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);};
-  if(ml){lbl.textContent="Job completed ✅ "+fn;const mt="mailto:forgedgraphicdesign@gmail.com?subject="+encodeURIComponent(ml.subject)+"&body="+encodeURIComponent(ml.body);
+  if(ml){if(!hk)lbl.textContent="Job completed ✅ "+fn;const mt="mailto:forgedgraphicdesign@gmail.com?subject="+encodeURIComponent(ml.subject)+"&body="+encodeURIComponent(ml.body);
    if(navigator.canShare&&navigator.canShare({files:[f]}))btn("📧 Email PDF (pick Mail)",async()=>{try{await navigator.share({files:[f],title:ml.subject,text:ml.body});}catch(e){}});
    btn("✉️ Email without PDF + download",()=>{dl();setTimeout(()=>{location.href=mt;},400);});}
   if(navigator.canShare&&navigator.canShare({files:[f]}))btn("📤 Share / Save",async()=>{try{await navigator.share({files:[f],title:fn});}catch(e){}});

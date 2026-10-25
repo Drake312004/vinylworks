@@ -1,19 +1,26 @@
-# Connect "Confirm" to your Order Form 2026 sheet (about 5 min, one time)
+# Connect VINYL WORKS to Google (about 10 min, one time)
 
-1. Open **Order Form 2026** in Google Sheets.
-2. **Extensions → Apps Script**. Delete whatever is in `Code.gs` and paste everything from `Code.gs` (this folder).
-3. On the line `const TOKEN = 'CHANGE-ME-to-a-long-secret';` replace the text between quotes with your own secret (e.g. `forged-7Hq2-vinyl-93kd`). Click **Save** (💾).
-4. Optional test: pick `testInsert` in the function menu → **Run** → allow access (Advanced → Go to project → Allow). A tab **CONFIRMED QUOTES** appears with a TEST row — delete that row.
-5. **Deploy → New deployment** → gear ⚙️ → **Web app**.
-   - Description: `VINYL WORKS confirm`
+This turns on two buttons:
+- **✅ Confirm** (Quick tab): adds a row to **CONFIRMED QUOTES**.
+- **✅ COMPLETED & PAID** (on a reopened invoice): emails the invoice PDF to forgedgraphicdesign@gmail.com, saves the PDF in the Drive folder **Forged Invoices 2026**, and adds or updates a row in **COMPLETED JOBS**.
+
+1. On your computer, sign in to Google as **forgedgraphicdesign@gmail.com**. You need to own the sheet, so do the ownership transfer first.
+2. Open **Order Form 2026** → **Extensions → Apps Script**.
+3. Delete everything in `Code.gs` and paste everything from `Code.gs` (this folder).
+4. Find `const TOKEN = 'CHANGE-ME-to-a-long-secret';`. Replace the text between the quotes with your own secret (e.g. `forged-7Hq2-vinyl-93kd`) → **Save** 💾.
+5. **Authorize (important):** pick `testJobDone` in the function menu → **Run**.
+   - Google asks for permission → **Review permissions** → choose forgedgraphicdesign@gmail.com.
+   - "Google hasn't verified this app" → **Advanced → Go to (project) (unsafe)** → **Allow**. This is your own script. It asks to **send email as you**, **see and create Drive files**, and **edit your spreadsheets**.
+   - You get a test email "JOB COMPLETED & PAID - KPI-TEST…", a **Forged Invoices 2026** folder with KPI-TEST.pdf, and a **COMPLETED JOBS** tab with a test row. Delete the test row and the file.
+6. **Deploy → New deployment** → gear ⚙️ → **Web app**.
    - **Execute as: Me**
    - **Who has access: Anyone**
-   - **Deploy** → authorize if asked → **copy the Web app URL** (ends in `/exec`).
-6. In the VINYL WORKS app: **Rapide / Quick** tab → **⚙️ Réglages / Settings** → paste the URL and the same token → **Save**.
-7. Do a quote and tap **✅ Confirm** — a row appears in CONFIRMED QUOTES.
+   - **Deploy** → copy the **Web app URL** (ends in `/exec`).
+7. In the app: **Quick** tab → **⚙️ Settings** → paste the URL and the same token → **Save**.
+8. Test: save an invoice → **🧾 Invoices** → Open → **✅ COMPLETED & PAID**. You should get the email with the PDF.
 
 Notes
-- The app can't read the sheet's reply (browser rule), so it shows "sent" once the request goes out. If no row appears, check the token and that access is **Anyone**.
-- Every confirm is also kept on the phone under **Confirmés / Confirmed**, even with no internet or no URL set.
+- The app can't read Google's reply (browser rule), so "Sent" means the request went out. If no email arrives, check the token, and that access is **Anyone**.
+- If the URL isn't set or there's no internet, the app falls back to the share sheet or email (send it yourself).
 - If you edit the script later: **Deploy → Manage deployments → ✏️ → Version: New version → Deploy** (the URL stays the same).
-- Your existing tabs (OCT 2026, VINYL PRICES) are never touched.
+- Your other tabs (OCT 2026, VINYL PRICES) are never touched.
