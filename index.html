@@ -53,7 +53,7 @@ input,select,textarea{border-color:#2c2c2c;border-radius:10px;background:#0d0d0d
 </style><link rel="manifest" href="manifest.json"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="VINYL WORKS">
 <link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"></head><body>
 <div class="hd"><img src="logo_white.png" alt="FORGED Design graphique"><div class="ap"><b>VINYL WORKS</b>CAD · NO TAX</div></div>
-<div class="tabs"><button id="tb_q" class="on" onclick="tab('q')">⚡ Quick</button><button id="tb_f" onclick="tab('f')">Full quote</button></div>
+<div class="tabs"><button id="tb_q" class="on" onclick="tab('q')">⚡ Quick</button><button id="tb_f" onclick="tab('f')">Full quote</button><button id="tb_i" onclick="tab('i')">🧾 Invoices</button></div>
 <div id="QQ">
 <div class="card"><b>DECAL</b>
 <label>Vinyl</label><div class="chip" id="qq_t"><button data-v="matte" onclick="qt(this)">Matte</button><button data-v="gloss" class="on" onclick="qt(this)">Gloss</button><button data-v="refl" onclick="qt(this)">Reflective</button></div>
@@ -72,7 +72,7 @@ input,select,textarea{border-color:#2c2c2c;border-radius:10px;background:#0d0d0d
 <label>Notes</label><textarea id="x_no" rows="2"></textarea></details></div></div>
 <div class="card"><b>TERMS</b><select id="qq_tm" onchange="qu()"><option value="rec">On receipt</option><option value="comp">On completion</option><option value="custom">Custom…</option></select><input id="qq_tc" style="display:none;margin-top:8px" placeholder="ex. Net 14" oninput="qu()">
 <label>Payment</label><div class="chip" id="qq_pm"><button data-v="interac" class="on" onclick="qp(this)">E-transfer</button><button data-v="cash" onclick="qp(this)">Cash</button></div><div class="hint" id="qq_cn" style="display:none">Cash: no invoice, quote only.</div></div>
-<div class="card"><div class="qa"><button class="ok full" onclick="qCopy()">📋 Copy message</button><button class="sec" onclick="qPdf('q')">📄 PDF Quote</button><button class="sec" id="qq_f" onclick="qPdf('i')">🧾 PDF Invoice</button><button class="pay" onclick="window.PDFMODE=1;qPdf('q')">⬇️ Save PDF Quote</button><button class="pay" id="qq_f2" onclick="window.PDFMODE=1;qPdf('i')">⬇️ Save PDF Invoice</button><button class="pay full" onclick="qConfirm()">✅ Confirm</button></div>
+<div class="card"><div class="qa"><button class="ok full" onclick="qCopy()">📋 Copy message</button><button class="sec" onclick="qPdf('q')">📄 PDF Quote</button><button class="sec" id="qq_f" onclick="qPdf('i')">🧾 PDF Invoice</button><button class="pay" onclick="window.PDFMODE=1;qPdf('q')">⬇️ Save PDF Quote</button><button class="pay" id="qq_f2" onclick="window.PDFMODE=1;qPdf('i')">⬇️ Save PDF Invoice</button><button class="pay full" onclick="qConfirm()">✅ Confirm</button><button class="sec full" id="qq_f3" onclick="qsync();saveInv()">🧾 Save invoice</button></div>
 <details style="margin-top:10px"><summary>Confirmed (<span id="cfn">0</span>)</summary><div id="cfl"></div></details>
 <details style="margin-top:4px"><summary>⚙️ Settings</summary><label>Google Sheet web-app URL</label><input id="st_u" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"><label>Token</label><input id="st_k" autocomplete="off"><button class="sec" style="width:100%;margin-top:8px" onclick="stSave()">Save</button></details></div>
 </div>
@@ -95,10 +95,11 @@ input,select,textarea{border-color:#2c2c2c;border-radius:10px;background:#0d0d0d
 </div>
 <div class="card"><b>Breakdown</b><div id="bd"></div></div>
 <div class="card" id="colcard" style="display:none"><b>VINYL BY COLOUR</b><div id="col"></div></div>
-<div class="card" id="qacts"><b>QUOTE</b><div class="acts"><button class="pay" onclick="saveQuote()">💾 Save quote</button><button class="sec" onclick="shareQuote()">🔗 Share link</button><div class="seg" style="grid-column:1/-1"><button id="k_q" class="on" onclick="setKind('q')">Quote</button><button id="k_i" onclick="setKind('i')">Invoice</button></div><button class="sec" onclick="pdfQuote()">📄 Print</button><button class="pay" onclick="savePdf()">⬇️ Save PDF</button><button class="sec" onclick="newQuote()">＋ New</button></div>
+<div class="card" id="qacts"><b>QUOTE</b><div class="acts"><button class="pay" onclick="saveQuote()">💾 Save quote</button><button class="sec" onclick="shareQuote()">🔗 Share link</button><button class="pay" style="grid-column:1/-1" onclick="saveInv()">🧾 Save invoice</button><button id="jcb" class="pay" style="grid-column:1/-1;display:none;background:#1a7f37;color:#fff;font-size:18px;font-weight:bold;min-height:56px" onclick="jobDone()">✅ JOB COMPLETED</button><div id="invst" class="hint" style="grid-column:1/-1"></div><div class="seg" style="grid-column:1/-1"><button id="k_q" class="on" onclick="setKind('q')">Quote</button><button id="k_i" onclick="setKind('i')">Invoice</button></div><button class="sec" onclick="pdfQuote()">📄 Print</button><button class="pay" onclick="savePdf()">⬇️ Save PDF</button><button class="sec" onclick="newQuote()">＋ New</button></div>
 <details style="margin-top:8px"><summary>Saved quotes (<span id="scount">0</span>)</summary><div id="saved"></div></details></div>
 <div class="card"><details><summary>🔒 Material & profit</summary><div id="prof"></div></details></div>
 </div>
+<div id="INV" style="display:none"><div class="card"><b>INVOICES</b><div id="invl"></div></div></div>
 <div class="bar"><div class="tot"><small>TOTAL</small><span id="total">$0</span></div><button class="copy" onclick="copyQuote()">Copy quote</button></div>
 <script>
 /*CALC-START*/
@@ -170,7 +171,7 @@ window.shareQuote=()=>{const url=location.origin+location.pathname+"#q="+enc(sta
  if(navigator.share)navigator.share({title,text:title+" ("+m(q().total)+" CAD)",url}).catch(e=>{if(e&&e.name!=="AbortError")fb();});else fb();};
 let curNo=null,curIno=null;
 function nextNo(P="Q-",F="no"){const d=new Date(),p=P+d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-";
- const used=getS().map(x=>x[F]||"").filter(n=>n.startsWith(p)).map(n=>+n.slice(p.length)||0);return p+String(Math.max(0,...used)+1).padStart(2,"0");}
+ const used=[...getS(),...getI()].map(x=>x[F]||"").filter(n=>n.startsWith(p)).map(n=>+n.slice(p.length)||0);return p+String(Math.max(0,...used)+1).padStart(2,"0");}
 window.tmUI=()=>{$("d_tcw").style.display=$("d_tm").value==="custom"?"":"none";};
 let kind="q";window.pmUI=()=>{const c=$("d_pm").value==="cash";$("k_i").disabled=c;if(c&&kind==="i")setKind("q");};window.setKind=k=>{if(k==="i"&&$("d_pm").value==="cash")return;kind=k;$("k_q").className=k==="q"?"on":"";$("k_i").className=k==="i"?"on":"";};
 const VFR={"matte black":"noir mat","matte white":"blanc mat","gloss black":"noir lustré","gloss white":"blanc lustré","reflective white":"blanc réfléchissant","reflective black":"noir réfléchissant","yellow 021":"jaune 021","king blue 049":"bleu roi 049","silver grey 090":"gris argent 090","red 032":"rouge 032"};
@@ -195,7 +196,7 @@ window.pdfQuote=()=>{const r=q(),{V,B}=items(r),c=state().c,T=terms(),inv=kind==
  const a=getS(),sv=a.find(x=>x.id===curId);
  if(sv){if(!sv.no)sv.no=nextNo();if(inv&&!sv.ino)sv.ino=nextNo("KPI-","ino");putS(a.map(x=>x.id===sv.id?sv:x));}
  const no=inv?(sv?sv.ino:(curIno||(curIno=nextNo("KPI-","ino")))):(sv?sv.no:(curNo||(curNo=nextNo())));
- const dt=inv?Date.now():(sv?sv.date:Date.now()),ymd=t=>new Date(t).toLocaleDateString("en-CA");
+ const dt=inv?(window.INVDATE||Date.now()):(sv?sv.date:Date.now()),ymd=t=>new Date(t).toLocaleDateString("en-CA");
  const tot=r.total,paid=Math.min(T.dep,tot),bal=tot-paid;
  const meta=[[inv?"N° de facture":"N° de devis",inv?"Invoice No.":"Quote No.",no],["Date","",ymd(dt)]];
  if(inv){if(T.due)meta.push(["Date d'échéance","Due date",ymd(dt)]);}else meta.push(["Valide jusqu'au","Valid until",ymd(dt+30*864e5)]);
@@ -229,7 +230,7 @@ window.pdfQuote=()=>{const r=q(),{V,B}=items(r),c=state().c,T=terms(),inv=kind==
 /* ---- QUICK QUOTE ---- */
 const QC={matte:["matte black","matte white"],gloss:["gloss black","gloss white","yellow 021","king blue 049","silver grey 090","red 032"],refl:["reflective white","reflective black"]};
 let qT="gloss",qPM="interac";
-let fs=null,qx=null,cur="";window.tab=t=>{if(cur==="f"&&t!=="f")fs=state();if(cur==="q"&&t!=="q")qx=xget();if(t==="q"&&cur!=="q"&&cur)xset(qx||{});cur=t;$(t==="f"?"xs_f":"xs_q").appendChild($("xd"));$("QQ").style.display=t==="q"?"":"none";$("FQ").style.display=t==="f"?"":"none";$("tb_q").className=t==="q"?"on":"";$("tb_f").className=t==="f"?"on":"";localStorage.setItem("vw_tab",t);if(t==="q")qu();else if(fs)load(fs);else upd();scrollTo(0,0);};
+let fs=null,qx=null,cur="";window.tab=t=>{if(cur==="f"&&t!=="f")fs=state();if(cur==="q"&&t!=="q")qx=xget();if(t==="q"&&cur!=="q"&&cur)xset(qx||{});cur=t;$(t==="f"?"xs_f":"xs_q").appendChild($("xd"));$("QQ").style.display=t==="q"?"":"none";$("FQ").style.display=t==="f"?"":"none";$("INV").style.display=t==="i"?"":"none";$("tb_i").className=t==="i"?"on":"";if(t==="i")drawInv();if(t!=="f"){curInv=null;invUI();}$("tb_q").className=t==="q"?"on":"";$("tb_f").className=t==="f"?"on":"";localStorage.setItem("vw_tab",t);if(t==="q")qu();else if(fs)load(fs);else upd();scrollTo(0,0);};
 const chip=(id,el)=>{[...$(id).children].forEach(b=>b.classList.toggle("on",b===el));};
 window.qt=el=>{chip("qq_t",el);qT=el.dataset.v;qcol();qu();};
 window.qp=el=>{chip("qq_pm",el);qPM=el.dataset.v;qu();};
@@ -237,7 +238,7 @@ function qcol(){const v=$("qq_c").value;$("qq_c").innerHTML=QC[qT].map(k=>`<opti
 function qsync(){L=[{w:$("qq_w").value,h:$("qq_h").value,qty:$("qq_q").value||1,vinyl:$("qq_c").value,install:false}];$("inst_all").checked=$("qq_i").checked;
  TIME_KEYS.forEach(([k])=>$("t_"+k).value=0);$("c_name").value=$("qq_n").value;$("c_contact").value=$("qq_e").value;
  $("d_tm").value=$("qq_tm").value;$("d_tc").value=$("qq_tc").value;$("d_pm").value=qPM;tmUI();pmUI();}
-window.qu=()=>{$("qq_tc").style.display=$("qq_tm").value==="custom"?"":"none";const c=qPM==="cash";$("qq_f").disabled=c;$("qq_f2").disabled=c;$("qq_cn").style.display=c?"":"none";
+window.qu=()=>{$("qq_tc").style.display=$("qq_tm").value==="custom"?"":"none";const c=qPM==="cash";$("qq_f").disabled=c;$("qq_f2").disabled=c;$("qq_f3").disabled=c;$("qq_cn").style.display=c?"":"none";
  qsync();const r=q(),x=r.lines[0];let h="";
  if(x&&x.L){h=`<div class="qq-price"><span>${x.q}× ${x.L}" billed · vinyl</span><span>${m(x.vinyl)}</span></div>`+(x.install?`<div class="qq-price"><span>Install</span><span>${m(x.install)}</span></div>`:"")+(x.labour?`<div class="qq-price"><span>Labour ${x.hrs} h</span><span>${m(x.labour)}</span></div>`:"")+(x.confirm?'<div class="note">⚠ above 100": confirm price</div>':"");}
  $("qq_p").innerHTML=`<div class="qq-price" style="margin-top:10px;border-top:1px solid var(--ln);padding-top:10px"><span>TOTAL</span><span class="qq-big">${m(r.total)}</span></div>`+h;$("total").textContent=m(r.total);};
@@ -257,6 +258,31 @@ window.qConfirm=async()=>{qsync();const r=q(),x=r.lines[0],T=terms();if(!x||!x.L
  if(u){try{await fetch(u,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(p)});rec.synced=true;msg="Confirmed ✅ sent to Google Sheet";}catch(e){msg="Confirmed ✅ saved locally, send failed";}}
  localStorage.setItem(CK,JSON.stringify(a));drawC();curNo=null;curIno=null;alert(msg+"\n"+qn+(ino?" · "+ino:""));};
 $("st_u").value=localStorage.getItem("vw_hook")||"";$("st_k").value=localStorage.getItem("vw_tok")||"";qcol();drawC();
+
+/* ---- SAVED INVOICES ---- */
+const IK="vw_invoices",getI=()=>{try{return JSON.parse(localStorage.getItem(IK))||[]}catch(e){return []}},putI=a=>localStorage.setItem(IK,JSON.stringify(a));
+let curInv=null;const ymd2=t=>new Date(t).toLocaleDateString("en-CA");
+function invUI(){const x=curInv&&getI().find(y=>y.id===curInv);$("jcb").style.display=x&&x.status==="Open"?"":"none";
+ $("invst").textContent=x?`Invoice ${x.ino} · ${x.status}${x.completed?" "+ymd2(x.completed):""}${x.paid?" · Paid":""}`:"";window.INVDATE=x?x.created:0;}
+window.saveInv=()=>{if($("d_pm").value==="cash")return alert("Cash: no invoice.");const r=q();if(!r.total)return alert("Nothing to invoice yet");
+ const s=state(),T=terms(),a=getI(),now=Date.now();let x=curInv&&a.find(y=>y.id===curInv);
+ const f={s,client:s.c,total:r.total,terms:T.custom?T.fr:`${T.sfr} / ${T.sen}`,termsKey:s.d.tm,deposit:Math.min(T.dep,r.total),pm:T.pm,updated:now};
+ if(x)Object.assign(x,f);else{x={id:"i"+now,ino:curIno||nextNo("KPI-","ino"),created:now,status:"Open",paid:false,...f};a.unshift(x);}
+ putI(a);curInv=x.id;curIno=x.ino;invUI();alert("Invoice saved ✅\n"+x.ino);};
+window.openInv=id=>{const x=getI().find(y=>y.id===id);if(!x)return;tab("f");load(x.s);curId=null;curNo=null;curIno=x.ino;curInv=id;setKind("i");invUI();scrollTo(0,document.body.scrollHeight);};
+window.paidInv=(id,v)=>{const a=getI(),x=a.find(y=>y.id===id);if(!x)return;x.paid=v;x.paidDate=v?Date.now():null;putI(a);drawInv();};
+window.delInv=id=>{if(!confirm("Delete this invoice?"))return;putI(getI().filter(y=>y.id!==id));drawInv();};
+function drawInv(){const a=getI();$("invl").innerHTML=a.map(x=>`<div class="sq"><div class="i" onclick="openInv('${x.id}')" style="cursor:pointer"><b>${esc(x.ino)}</b> · ${esc(x.client.co||x.client.n||"—")} · ${m(x.total)}<small>${ymd2(x.created)} · <b style="color:${x.status==="Open"?"#d29922":"#3fb950"}">${x.status}${x.completed?" "+ymd2(x.completed):""}</b>${x.paid?' · <b style="color:#3fb950">PAID</b>':""}</small></div><label style="font-size:13px;display:flex;align-items:center;gap:4px;margin:0"><input type="checkbox" ${x.paid?"checked":""} onchange="paidInv('${x.id}',this.checked)" style="width:auto">Paid</label><button class="sec" onclick="openInv('${x.id}')">Open</button><button class="sec" onclick="delInv('${x.id}')">✕</button></div>`).join("")||'<div class="line">No saved invoices yet. Save one from Quick or Full quote.</div>';}
+const M2=n=>"$"+(+n||0).toFixed(2);
+function jobMail(x){const r=q(),{V,B}=items(r),c=x.client,T=terms(),dep=Math.min(T.dep,r.total),who=c.co||c.n||"—";
+ const ad=[c.bs,[c.bc,c.bp].filter(Boolean).join(", "),c.bz].map(v=>(v||"").trim()).filter(Boolean).join(", ");
+ const it=[...V,...B].map((y,i)=>`Item ${i+1}: ${y[2]||y[1]} | Qty: ${+(+y[0]).toFixed(2)} | Rate: ${M2(y[3])} | Amount: ${M2(y[4])}`);
+ const subject=`JOB COMPLETED - ${x.ino} - ${who} - ${M2(r.total)}`;
+ const L2=[["Invoice No",x.ino],["Invoice Date",ymd2(x.created)],["Completed Date",ymd2(x.completed)],["Status",x.status],["Client Name",c.n],["Company",c.co],["Email/Contact",c.ct],["Phone",c.ph],["Billing Address",ad],["Service Address",c.sa],["PO No",c.po],["Client GST/QST",c.tx],["Notes",c.no]].map(([k,v])=>`${k}: ${v||""}`);
+ const body=[...L2,"",...it,"",`Vinyl Subtotal: ${M2(r.vinylSub)}`,`Labour Subtotal: ${M2(r.labourSub)}`,`Total: ${M2(r.total)}`,`Deposit: ${M2(dep)}`,`Balance: ${M2(r.total-dep)}`,`Terms: ${T.custom?T.fr:T.sen+" / "+T.sfr}`,`Payment Method: ${T.pm==="cash"?"Cash":"Interac e-Transfer"}`].join("\n");
+ return {subject,body};}
+window.jobDone=()=>{const a=getI(),x=a.find(y=>y.id===curInv);if(!x)return;if(!confirm(`Mark ${x.ino} as JOB COMPLETED and email it?`))return;
+ x.status="Completed";x.completed=Date.now();x.s=state();x.total=q().total;putI(a);invUI();window.PDFMAIL=jobMail(x);window.LASTMAIL=window.PDFMAIL;setKind("i");window.PDFMODE=1;pdfQuote();};
 drawSaved();
 let ok=false;const hm=location.hash.match(/^#q=(.+)$/);if(hm){try{ok=load(dec(hm[1]));}catch(e){alert("Couldn't open that quote link");}}
 if(!ok)addLine();fs=state();tab(ok?"f":(localStorage.getItem("vw_tab")||"q"));}
@@ -277,7 +303,11 @@ window.mkPdf=async no=>{const pv=document.getElementById("pv"),st=document.creat
   const fn=(no||"document")+".pdf",blob=d.output("blob");window._lastPdf={blob,fn};
   busy.innerHTML="";busy.style.flexDirection="column";busy.style.gap="12px";
   const f=new File([blob],fn,{type:"application/pdf"}),btn=(t,fx)=>{const b=document.createElement("button");b.textContent=t;b.style.cssText="padding:14px 22px;font-size:16px;border-radius:10px;border:0;min-width:200px";b.onclick=fx;busy.appendChild(b);};
-  const lbl=document.createElement("div");lbl.textContent=fn;busy.appendChild(lbl);
+  const lbl=document.createElement("div");lbl.textContent=fn;busy.appendChild(lbl);const ml=window.PDFMAIL;window.PDFMAIL=null;
+  const dl=()=>{const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);};
+  if(ml){lbl.textContent="Job completed ✅ "+fn;const mt="mailto:forgedgraphicdesign@gmail.com?subject="+encodeURIComponent(ml.subject)+"&body="+encodeURIComponent(ml.body);
+   if(navigator.canShare&&navigator.canShare({files:[f]}))btn("📧 Email PDF (pick Mail)",async()=>{try{await navigator.share({files:[f],title:ml.subject,text:ml.body});}catch(e){}});
+   btn("✉️ Email without PDF + download",()=>{dl();setTimeout(()=>{location.href=mt;},400);});}
   if(navigator.canShare&&navigator.canShare({files:[f]}))btn("📤 Share / Save",async()=>{try{await navigator.share({files:[f],title:fn});}catch(e){}});
   btn("⬇️ Download / Open",()=>{const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);});
   btn("Close",()=>busy.remove());
